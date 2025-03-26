@@ -1,0 +1,22 @@
+$size: 70px;
+$neon-color: cyan; // Neon color variable
+
+.neon-button {
+	font-size: 1.5rem;
+	border-radius: 99em;
+	padding: 0;
+	border: 0;
+	display: grid;
+	grid-template-columns: 1fr;
+	place-items: center;
+	cursor: pointer;
+	width: $size;
+	height: $size;
+	transition: color 0.15s ease, width 0.25s ease-out;
+	position: fixed;
+	bottom: 100px;
+	right: 100px;
+	background-color: rgb(34, 35, 38);
+	border: 1px solid rgb(49, 48, 53);
+	box-shadow: 0 4px 8px 0 rgba(0 0 0 / var(0.025));
+}
