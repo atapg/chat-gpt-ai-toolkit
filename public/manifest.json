@@ -3,18 +3,15 @@
 	"name": "Chat GPT AI Toolkit",
 	"version": "1.0.0",
 	"description": "A Chrome extension to enhance productivity with AI tools.",
-	"permissions": [
-		"storage",
-		"activeTab",
-		"scripting",
-		"webRequest",
-		"declarativeNetRequest"
-	],
+	"permissions": ["storage", "unlimitedStorage", "scripting", "activeTab"],
 	"action": {
 		"default_popup": "index.html",
 		"default_icon": {
 			"32": "assets/icons/icon32.png"
 		}
+	},
+	"background": {
+		"service_worker": "background.js"
 	},
 	"icons": {
 		"32": "assets/icons/icon32.png"
@@ -22,7 +19,7 @@
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],
-			"js": ["initializeUI.js"],
+			"js": ["content.js"],
 			"run_at": "document_end",
 			"all_frames": true
 		}

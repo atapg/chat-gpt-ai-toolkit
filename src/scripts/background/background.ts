@@ -1,12 +1,14 @@
-// chrome.webRequest.onCompleted.addListener(
-// 	async (details) => {
-// 		console.log(details)
-// 	},
-// 	{
-// 		urls: ['<all_urls>'],
-// 	}
-// )
+console.log(chrome)
+console.log(chrome.action)
 
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-// 	console.log({ message, sender, sendResponse })
-// })
+function injectedFunction() {
+	console.log('Heree')
+	document.body.style.backgroundColor = 'orange'
+}
+
+chrome.action.onClicked.addListener((tab) => {
+	chrome.scripting.executeScript({
+		target: { tabId: tab.id! },
+		func: injectedFunction,
+	})
+})

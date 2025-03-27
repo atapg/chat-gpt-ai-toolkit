@@ -6,12 +6,12 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
 	plugins: [react()],
 	build: {
+		minify: false,
 		rollupOptions: {
 			input: {
-				// background: 'src/scripts/background/background.ts',
-				// content: 'src/scripts/content/content.ts',
-				initializeUI: 'src/scripts/ui/InitializeUI.ts',
+				content: 'src/scripts/content/content.ts',
 				index: 'index.html',
+				background: 'src/scripts/background/background.ts',
 			},
 			output: {
 				dir: 'dist',
