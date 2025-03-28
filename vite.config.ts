@@ -9,9 +9,11 @@ export default defineConfig({
 		minify: false,
 		rollupOptions: {
 			input: {
-				content: 'src/scripts/content/content.ts',
 				index: 'index.html',
 				background: 'src/scripts/background/background.ts',
+				content: 'src/scripts/content/content.ts',
+				interceptor: 'src/scripts/interceptor/interceptor.ts',
+				fetch: 'src/utils/fetch.ts',
 			},
 			output: {
 				dir: 'dist',

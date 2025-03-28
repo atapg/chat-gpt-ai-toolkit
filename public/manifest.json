@@ -3,7 +3,14 @@
 	"name": "Chat GPT AI Toolkit",
 	"version": "1.0.0",
 	"description": "A Chrome extension to enhance productivity with AI tools.",
-	"permissions": ["storage", "unlimitedStorage", "scripting", "activeTab"],
+	"permissions": [
+		"storage",
+		"unlimitedStorage",
+		"scripting",
+		"activeTab",
+		"cookies"
+	],
+	"host_permissions": ["https://chatgpt.com/*"],
 	"action": {
 		"default_popup": "index.html",
 		"default_icon": {
@@ -18,7 +25,14 @@
 	},
 	"content_scripts": [
 		{
-			"matches": ["https://chatgpt.com/*", "http://chatgpt.com/*"],
+			"matches": ["https://chatgpt.com/*"],
+			"js": ["interceptor.js"],
+			"type": "module",
+			"run_at": "document_start",
+			"all_frames": true
+		},
+		{
+			"matches": ["https://chatgpt.com/*"],
 			"js": ["content.js"],
 			"type": "module",
 			"run_at": "document_end",
@@ -27,8 +41,16 @@
 	],
 	"web_accessible_resources": [
 		{
-			"resources": ["index.js", "vendor.js", "index.css"],
-			"matches": ["https://chatgpt.com/*", "http://chatgpt.com/*"]
+			"resources": [
+				"index.js",
+				"vendor.js",
+				"index.css",
+				"interceptor.js",
+				"content.js",
+				"injectors.js",
+				"fetch.js"
+			],
+			"matches": ["https://chatgpt.com/*"]
 		}
 	]
 }

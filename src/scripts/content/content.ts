@@ -8,7 +8,7 @@ import {
 	const app = document.createElement('div')
 	app.id = 'appRoot'
 
-	// Inject react app
+	// Inject react app root element
 	injectHTMLElement(app)
 
 	// Inject react app script

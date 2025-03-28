@@ -1,13 +1,18 @@
 import { observeElementRemoval } from './observers'
 
-const injectHTMLElement = async (
+export const injectHTMLElement = async (
 	element: HTMLElement,
-	targetElement: HTMLElement = document.body
+	targetElement: HTMLElement = document.body,
+	appendType: 'append' | 'prepend' = 'append'
 ) => {
 	const existingElement = document.querySelector(`#${element.id}`)
 
 	if (!existingElement) {
-		targetElement.appendChild(element)
+		if (appendType === 'append') {
+			targetElement.appendChild(element)
+		} else if (appendType === 'prepend') {
+			targetElement.prepend(element)
+		}
 	}
 
 	observeElementRemoval(
@@ -19,11 +24,11 @@ const injectHTMLElement = async (
 	)
 }
 
-const injectScript = async (src: string) => {
+export const injectScript = async (src: string) => {
 	await import(src)
 }
 
-const injectStyle = (href: string) => {
+export const injectStyle = (href: string) => {
 	const link = document.createElement('link')
 	link.rel = 'stylesheet'
 	link.href = href
@@ -45,10 +50,3 @@ const injectStyle = (href: string) => {
 
 // 	injectHTMLElement(container, targetElement)
 // }
-
-export {
-	injectHTMLElement,
-	injectScript,
-	injectStyle,
-	//  injectReactElement
-}
