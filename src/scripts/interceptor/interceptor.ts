@@ -7,10 +7,4 @@
 
 	const head = document.head || document.documentElement
 	head.prepend(newScriptElement)
-
-	newScriptElement.onload = () => {
-		console.log('fetch.js script injected successfully')
-		// @ts-ignore
-		this.remove()
-	}
 })()

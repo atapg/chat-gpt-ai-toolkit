@@ -3,7 +3,7 @@ import './test.css'
 function App() {
 	return (
 		<div className='App'>
-			<header className='App-header'>
+			{/* <header className='App-header'>
 				<p>Hello Ataaa</p>
 				<button
 					onClick={() => {
@@ -12,7 +12,7 @@ function App() {
 				>
 					Clicker
 				</button>
-			</header>
+			</header> */}
 		</div>
 	)
 }
