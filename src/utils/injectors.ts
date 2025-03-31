@@ -5,23 +5,35 @@ export const injectHTMLElement = async (
 	targetElement: HTMLElement = document.body,
 	appendType: 'append' | 'prepend' = 'append'
 ) => {
-	const existingElement = document.querySelector(`#${element.id}`)
+	// Check if element already exists
+	const existingElement = document.getElementById(element.id)
 
 	if (!existingElement) {
 		if (appendType === 'append') {
 			targetElement.appendChild(element)
-		} else if (appendType === 'prepend') {
+		} else {
 			targetElement.prepend(element)
 		}
 	}
 
-	observeElementRemoval(
+	// Cleanup function to prevent multiple observers
+	let cleanupObserver: (() => void) | null = null
+
+	// Observe element removal and reinject
+	cleanupObserver = await observeElementRemoval(
 		() => {
-			injectHTMLElement(element, targetElement)
+			injectHTMLElement(element, targetElement, appendType)
 		},
 		element,
 		targetElement
 	)
+
+	// Return cleanup function to stop observing if needed manually
+	return () => {
+		if (cleanupObserver) {
+			cleanupObserver() // Stop observing
+		}
+	}
 }
 
 export const injectScript = async (src: string) => {

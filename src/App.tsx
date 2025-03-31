@@ -1,19 +1,16 @@
+import { createPortal } from 'react-dom'
 import './test.css'
+import Sidebar from './components/Sidebar'
+import { usePortalTarget } from './hooks/usePortalTarget'
 
 function App() {
+	const navElement = usePortalTarget('nav') // Track <nav> element
+
 	return (
-		<div className='App'>
-			{/* <header className='App-header'>
-				<p>Hello Ataaa</p>
-				<button
-					onClick={() => {
-						console.log('Clicked react button')
-					}}
-				>
-					Clicker
-				</button>
-			</header> */}
-		</div>
+		<>
+			<p>App</p>
+			{navElement ? createPortal(<Sidebar />, navElement) : null}
+		</>
 	)
 }
 
