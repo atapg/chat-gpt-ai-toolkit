@@ -55,5 +55,8 @@ export function usePortalTarget(
 }
 
 const cleanElementChildren = (element: HTMLElement) => {
-	element.textContent = ''
+	element.childNodes.forEach((child) => {
+		// @ts-ignore
+		child.style.display = 'none'
+	})
 }

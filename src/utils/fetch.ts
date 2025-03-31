@@ -11,5 +11,14 @@ window.fetch = async function (...args) {
 		fetchHandler(response)
 	}
 
+	// if (response && response.url.includes('conversations')) {
+	// 	if (args[1] && args[1].headers) {
+	// 		// chrome.runtime.sendMessage({
+	// 		// 	type: 'REQUEST_HEADERS',
+	// 		// 	data: args[1].headers as unknown as IRequestHeaders,
+	// 		// })
+	// 	}
+	// }
+
 	return response
 }

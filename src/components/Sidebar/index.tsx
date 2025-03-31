@@ -23,12 +23,17 @@ const SidebarWrapper = () => {
 	const url = new URL(window.location.href)
 
 	useEffect(() => {
+		console.log(url.pathname)
 		if (url.pathname === '/gpts') {
 			setRenderElement(navElementGPTSPath)
 		} else {
 			setRenderElement(navElement)
 		}
 	}, [navElement, navElementGPTSPath, url.pathname])
+
+	useEffect(() => {
+		// Fetch conversations
+	}, [])
 
 	return (
 		<>
