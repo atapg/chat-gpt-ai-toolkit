@@ -1,3 +1,3 @@
-export const userDataHandler = async (data: unknown) => {
-	console.log(data)
+export const userDataHandler = async (_: unknown) => {
+	// console.log(data)
 }
