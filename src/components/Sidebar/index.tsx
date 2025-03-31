@@ -1,51 +1,46 @@
-import { useEffect, useRef, useState } from 'react'
-import { ISidebar } from '../../types/interfaces/sidebarTypes'
+import { usePortalTarget } from '../../hooks/usePortalTarget'
+import { createPortal } from 'react-dom'
+import Sidebar from './SidebarUI'
+import { useEffect, useState } from 'react'
 
-const Sidebar = (props: ISidebar) => {
-	const [activeTab, setActiveTab] = useState('extension') // Track the active tab
-	const ref = useRef<HTMLDivElement | null>(null)
+const SidebarWrapper = () => {
+	const [navElement] = usePortalTarget(
+		'.group\\/sidebar > div:nth-child(3)',
+		{
+			cleanElement: true,
+		}
+	) // Track <nav> element
 
-	// Handle tab switching
-	const handleTabSwitch = (tab: string) => {
-		setActiveTab(tab)
-	}
+	const [navElementGPTSPath] = usePortalTarget(
+		'nav > div:nth-child(2) > div:nth-child(3)',
+		{
+			cleanElement: true,
+		}
+	) // Track <nav> element
+
+	const [renderElement, setRenderElement] = useState<HTMLElement | null>(null)
+
+	const url = new URL(window.location.href)
 
 	useEffect(() => {
-		if (ref.current && props.content) {
-			// Ensure props.content is an element before appending
-			ref.current.append(props.content)
+		if (url.pathname === '/gpts') {
+			setRenderElement(navElementGPTSPath)
+		} else {
+			setRenderElement(navElement)
 		}
-	}, [props.content]) // Depend on content so it updates when it changes
+	}, [navElement, navElementGPTSPath, url.pathname])
 
 	return (
-		<div className='sidebar-container'>
-			{/* Tabs */}
-			<div>
-				<button
-					style={{ backgroundColor: 'red' }}
-					onClick={() => handleTabSwitch('extension')}
-				>
-					Extension
-				</button>
-				<button
-					style={{ backgroundColor: 'blue' }}
-					onClick={() => handleTabSwitch('original')}
-				>
-					Original
-				</button>
-			</div>
-
-			<div
-				ref={ref}
-				className={`${activeTab === 'extension' ? 'display-none' : ''}`}
-			></div>
-			<div
-				className={`${activeTab === 'original' ? 'display-none' : ''}`}
-			>
-				EXtension details
-			</div>
-		</div>
+		<>
+			{/* Inject Sidebar Component */}
+			{renderElement
+				? createPortal(
+						<Sidebar rootElement={renderElement} />,
+						renderElement
+				  )
+				: null}
+		</>
 	)
 }
 
-export default Sidebar
+export default SidebarWrapper

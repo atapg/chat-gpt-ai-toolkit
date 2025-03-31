@@ -1,0 +1,37 @@
+@use '../../styles/variables' as *;
+
+.tabs-container {
+	width: 100%;
+	margin: 0 auto;
+	font-family: Arial, sans-serif;
+}
+
+.tabs {
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.tab {
+	width: 100%;
+	padding-bottom: 7px;
+	cursor: pointer;
+	font-weight: 500;
+	transition: all 0.3s ease;
+	color: #4a4a4a;
+	border: none;
+	background: none;
+	border-bottom: 3px solid transparent;
+}
+
+.tab:hover {
+	color: $primary-color;
+}
+
+.tab.active {
+	color: $primary-color;
+	border-bottom: 1px solid;
+}
+
+.tab-content {
+	border-radius: 8px;
+}
