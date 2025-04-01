@@ -1,5 +1,3 @@
-const fetchConversations = async () => {
-	// console.log(headers)
-}
+const fetchConversations = async () => {}
 
 export { fetchConversations }

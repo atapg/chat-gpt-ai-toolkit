@@ -1,8 +1,9 @@
+import { IConversation } from '../types/interfaces/conversationTypes'
 import { StorageAction, IStorageState } from '../types/interfaces/storageTypes'
 
 export const initialStorage: IStorageState = {
 	conversations: [],
-	limit: 50,
+	limit: 100,
 	offset: 0,
 	total: 0,
 }
@@ -13,8 +14,21 @@ export const storageReducer = (
 ): IStorageState => {
 	switch (action.type) {
 		case 'ADD_CONVERSATION':
-			return { ...state, ...action.value }
+			return {
+				...state,
+				conversations: [
+					...state.conversations,
+					...(action.value as IConversation[]),
+				],
+			}
 
+		case 'ADD_META':
+			return {
+				...state,
+				limit: action.value.limit,
+				offset: action.value.offset,
+				total: action.value.total,
+			}
 		default:
 			return state
 	}

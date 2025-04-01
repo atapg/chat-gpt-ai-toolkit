@@ -1,17 +1,19 @@
 import type { ReactNode } from 'react'
+import { IConversation } from './conversationTypes'
 
 export interface IStorageState {
-	conversations: [] //TODO add conversations type later
+	conversations: IConversation[] //TODO add conversations type later
 	limit: Number
 	offset: Number
 	total: Number
 }
 
-export type StorageAction = {
-	type: 'ADD_CONVERSATION'
-	key: string
-	value: any
-}
+export type StorageAction =
+	| {
+			type: 'ADD_CONVERSATION'
+			value: IConversation[]
+	  }
+	| { type: 'ADD_META'; value: any }
 
 export interface IStorageContextType {
 	state: IStorageState
