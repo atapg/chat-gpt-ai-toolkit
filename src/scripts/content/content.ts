@@ -1,3 +1,4 @@
+import '../../utils/events'
 import {
 	injectHTMLElement,
 	injectScript,

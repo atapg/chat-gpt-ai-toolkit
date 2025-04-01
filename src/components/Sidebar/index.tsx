@@ -18,6 +18,8 @@ const SidebarWrapper = () => {
 		}
 	) // Track <nav> element
 
+	// const { state, dispatch } = useStorage()
+
 	const [renderElement, setRenderElement] = useState<HTMLElement | null>(null)
 
 	const url = new URL(window.location.href)

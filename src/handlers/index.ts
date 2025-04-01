@@ -1,10 +1,10 @@
 import { getRequestData, getUrlPathName } from '../helpers/requestHelpers'
 import { userDataHandler } from './userDataHandler'
 
-export const fetchHandler = async (response: Response) => {
+export const fetchHandler = async (response: Response, url: string) => {
 	const data = await getRequestData(response)
 
-	switch (getUrlPathName(response.url)) {
+	switch (getUrlPathName(url)) {
 		case '/backend-api/me':
 			userDataHandler(data)
 			break

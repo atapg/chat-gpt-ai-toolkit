@@ -1,7 +1,5 @@
-import { headers } from './headers'
-
 const fetchConversations = async () => {
-	console.log(headers)
+	// console.log(headers)
 }
 
 export { fetchConversations }
