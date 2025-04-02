@@ -3,10 +3,22 @@ import { ISidebar } from '../../types/interfaces/sidebarTypes'
 import './style.scss'
 import { useStorage } from '../../hooks/useStorage'
 import SidebarItems from './SidebarItems'
+import Spinner from '../Spinner'
 
 const Sidebar = (_: ISidebar) => {
 	const [activeTab, setActiveTab] = useState('extension')
+	const [loading, setLoading] = useState(false)
 	const { state } = useStorage()
+
+	const loadMoreData = () => {
+		if (loading) return
+
+		setLoading(true)
+
+		setTimeout(() => {
+			setLoading(false)
+		}, 6000)
+	}
 
 	const handleTabSwitch = (tab: string) => {
 		setActiveTab(tab)
@@ -15,6 +27,27 @@ const Sidebar = (_: ISidebar) => {
 	useEffect(() => {
 		console.log(state.conversations)
 	}, [state])
+
+	useEffect(() => {
+		const targetElement = document.querySelector('nav > div:nth-child(2)')
+
+		const handleScroll = () => {
+			if (!targetElement || loading) return
+
+			const bottom =
+				targetElement.scrollHeight - 550 < targetElement.scrollTop
+
+			if (bottom) {
+				loadMoreData()
+			}
+		}
+
+		targetElement?.addEventListener('scroll', handleScroll)
+
+		return () => {
+			targetElement?.removeEventListener('scroll', handleScroll)
+		}
+	}, [loading])
 
 	return (
 		<div id='sidebar-container'>
@@ -40,7 +73,7 @@ const Sidebar = (_: ISidebar) => {
 
 			{/* Tab content */}
 			<div
-				className={`${
+				className={`all-chats ${
 					activeTab === 'original' ? 'tab-content' : 'display-none'
 				}`}
 			>
@@ -57,6 +90,7 @@ const Sidebar = (_: ISidebar) => {
 				) : (
 					<></>
 				)}
+				{loading ? <Spinner /> : <></>}
 			</div>
 
 			<div

@@ -3,9 +3,9 @@ import { IConversation } from './conversationTypes'
 
 export interface IStorageState {
 	conversations: IConversation[]
-	limit: Number
-	offset: Number
-	total: Number
+	limit: number
+	offset: number
+	total: number
 }
 
 export type StorageAction =

@@ -9,3 +9,14 @@
 .display-none {
 	display: none;
 }
+
+.hide-scroll {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
+
+.center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
