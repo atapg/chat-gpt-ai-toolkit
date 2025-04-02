@@ -4,6 +4,7 @@ import './style.scss'
 import { useStorage } from '../../hooks/useStorage'
 import SidebarItems from './SidebarItems'
 import Spinner from '../Spinner'
+import useInfiniteScroll from '../../hooks/useInfiniteScroll'
 
 const Sidebar = (_: ISidebar) => {
 	const [activeTab, setActiveTab] = useState('extension')
@@ -20,6 +21,12 @@ const Sidebar = (_: ISidebar) => {
 		}, 6000)
 	}
 
+	useInfiniteScroll({
+		querySelector: 'nav > div:nth-child(2)',
+		loading,
+		func: loadMoreData,
+	})
+
 	const handleTabSwitch = (tab: string) => {
 		setActiveTab(tab)
 	}
@@ -27,27 +34,6 @@ const Sidebar = (_: ISidebar) => {
 	useEffect(() => {
 		console.log(state.conversations)
 	}, [state])
-
-	useEffect(() => {
-		const targetElement = document.querySelector('nav > div:nth-child(2)')
-
-		const handleScroll = () => {
-			if (!targetElement || loading) return
-
-			const bottom =
-				targetElement.scrollHeight - 550 < targetElement.scrollTop
-
-			if (bottom) {
-				loadMoreData()
-			}
-		}
-
-		targetElement?.addEventListener('scroll', handleScroll)
-
-		return () => {
-			targetElement?.removeEventListener('scroll', handleScroll)
-		}
-	}, [loading])
 
 	return (
 		<div id='sidebar-container'>
