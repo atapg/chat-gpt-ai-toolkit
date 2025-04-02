@@ -1,0 +1,42 @@
+/* SidebarItems.scss */
+.sidebar-item {
+	position: relative;
+	cursor: pointer;
+
+	& > div {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 8px;
+		transition: transform 0.1s ease-in-out;
+		border-radius: 8px;
+		background-color: var(--item-background-color);
+		height: 36px;
+		font-size: 0.875rem;
+	}
+
+	& > div:hover {
+		background-color: var(--sidebar-surface-secondary);
+	}
+
+	& > div:active {
+		opacity: 0.9;
+	}
+
+	& > div:active,
+	& > div:hover {
+		transform: scale(0.98);
+	}
+
+	.sidebar-item-content {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.group-active-scale {
+		transform: scale(0.98);
+		transition: transform 0.1s ease-in-out;
+		overflow: hidden;
+	}
+}

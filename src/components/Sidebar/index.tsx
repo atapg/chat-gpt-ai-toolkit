@@ -8,6 +8,7 @@ const SidebarWrapper = () => {
 		'.group\\/sidebar > div:nth-child(3)',
 		{
 			cleanElement: true,
+			exceptionElementId: 'sidebar-container',
 		}
 	) // Track <nav> element
 
@@ -15,6 +16,7 @@ const SidebarWrapper = () => {
 		'nav > div:nth-child(2) > div:nth-child(3)',
 		{
 			cleanElement: true,
+			exceptionElementId: 'sidebar-container',
 		}
 	) // Track <nav> element
 
@@ -25,7 +27,6 @@ const SidebarWrapper = () => {
 	const url = new URL(window.location.href)
 
 	useEffect(() => {
-		console.log(url.pathname)
 		if (url.pathname === '/gpts') {
 			setRenderElement(navElementGPTSPath)
 		} else {

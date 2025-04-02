@@ -18,7 +18,7 @@ function App() {
 			event: CustomEventInit<IRequestHeaders | undefined>
 		) => {
 			try {
-				const data = (await func('offset=0&limit=100', {
+				const data = (await func('offset=0&limit=30&order=updated', {
 					headers: event.detail
 						? Object.fromEntries(Object.entries(event.detail))
 						: undefined,

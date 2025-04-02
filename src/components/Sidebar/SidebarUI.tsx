@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ISidebar } from '../../types/interfaces/sidebarTypes'
 import './style.scss'
 import { useStorage } from '../../hooks/useStorage'
+import SidebarItems from './SidebarItems'
 
 const Sidebar = (_: ISidebar) => {
 	const [activeTab, setActiveTab] = useState('extension')
@@ -16,7 +17,7 @@ const Sidebar = (_: ISidebar) => {
 	}, [state])
 
 	return (
-		<div className='sidebar-container'>
+		<div id='sidebar-container'>
 			{/* Tabs */}
 			<div className='tabs'>
 				<button
@@ -43,7 +44,19 @@ const Sidebar = (_: ISidebar) => {
 					activeTab === 'original' ? 'tab-content' : 'display-none'
 				}`}
 			>
-				All chats rendered here
+				{state.conversations ? (
+					<ol>
+						{state.conversations.map((conversation, index) => (
+							<SidebarItems
+								key={conversation.id}
+								conversation={conversation}
+								index={index}
+							/>
+						))}
+					</ol>
+				) : (
+					<></>
+				)}
 			</div>
 
 			<div

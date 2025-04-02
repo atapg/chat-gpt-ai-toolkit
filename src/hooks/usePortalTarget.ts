@@ -27,7 +27,16 @@ export function usePortalTarget(
 
 				// Invoke options
 				if (options?.cleanElement) {
-					cleanElementChildren(element)
+					// Run func first to make smoother
+					cleanElementChildren(element, options?.exceptionElementId)
+
+					// Start cleaning the children of the element every second for 20 seconds
+					startCleanInterval(() =>
+						cleanElementChildren(
+							element,
+							options?.exceptionElementId
+						)
+					)
 				}
 			}
 		}
@@ -44,19 +53,34 @@ export function usePortalTarget(
 		observer.observe(document.body, { childList: true, subtree: true })
 
 		return () => observer.disconnect() // Cleanup observer on unmount
-	}, [selector, targetElement])
+	}, [selector, targetElement, options])
 
 	// Use Tuple for return value
 	let returnValue: [HTMLElement | null, HTMLCollection | null]
-
 	returnValue = [targetElement, targetElementChildren]
 
 	return returnValue
 }
 
-const cleanElementChildren = (element: HTMLElement) => {
+// Interval for calling clean element function
+const startCleanInterval = (callback: Function) => {
+	const intervalId = setInterval(() => {
+		callback()
+	}, 1000)
+
+	setTimeout(() => {
+		clearInterval(intervalId)
+	}, 20000)
+}
+
+const cleanElementChildren = (element: HTMLElement, exception?: string) => {
 	element.childNodes.forEach((child) => {
-		// @ts-ignore
-		child.style.display = 'none'
+		if (child instanceof HTMLElement) {
+			if (exception && child.id !== exception) {
+				child.remove()
+			}
+		} else {
+			child.remove()
+		}
 	})
 }
