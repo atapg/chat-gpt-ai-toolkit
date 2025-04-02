@@ -1,4 +1,3 @@
-import { fetchHandler } from '../handlers'
 import { IRequestHeaders } from '../types/interfaces/requestHeadersTypes'
 
 // *** This script must be injected into the content script at first before all requests ***
@@ -19,7 +18,8 @@ window.fetch = async function (...args) {
 	}
 
 	if (response) {
-		fetchHandler(response, url)
+		url
+		// fetchHandler(response, url)
 	}
 
 	if (response && response.url.includes('conversations')) {

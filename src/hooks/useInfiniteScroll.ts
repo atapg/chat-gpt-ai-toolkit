@@ -13,7 +13,10 @@ const useInfiniteScroll = ({
 			if (!targetElement || loading) return
 
 			const bottom =
-				targetElement.scrollHeight - 550 < targetElement.scrollTop
+				targetElement.scrollHeight -
+					targetElement.scrollTop -
+					targetElement.clientHeight <
+				75
 
 			if (bottom) {
 				func()
