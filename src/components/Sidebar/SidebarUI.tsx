@@ -1,13 +1,19 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ISidebar } from '../../types/interfaces/sidebarTypes'
 import './style.scss'
+import { useStorage } from '../../hooks/useStorage'
 
 const Sidebar = (_: ISidebar) => {
 	const [activeTab, setActiveTab] = useState('extension')
+	const { state } = useStorage()
 
 	const handleTabSwitch = (tab: string) => {
 		setActiveTab(tab)
 	}
+
+	useEffect(() => {
+		console.log(state.conversations)
+	}, [state])
 
 	return (
 		<div className='sidebar-container'>

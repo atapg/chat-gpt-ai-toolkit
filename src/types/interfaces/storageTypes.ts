@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { IConversation } from './conversationTypes'
 
 export interface IStorageState {
-	conversations: IConversation[] //TODO add conversations type later
+	conversations: IConversation[]
 	limit: Number
 	offset: Number
 	total: Number
