@@ -1,39 +1,31 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ISidebar } from '../../types/interfaces/sidebarTypes'
 import './style.scss'
 import { useStorage } from '../../hooks/useStorage'
 import SidebarItems from './SidebarItems'
 import Spinner from '../Spinner'
 import useInfiniteScroll from '../../hooks/useInfiniteScroll'
+import useFetchConversations from '../../hooks/useFetchConversations'
 
 const Sidebar = (_: ISidebar) => {
 	const [activeTab, setActiveTab] = useState('extension')
-	const [loading, setLoading] = useState(false)
 	const { state } = useStorage()
-
-	const loadMoreData = () => {
-		if (loading) return
-
-		setLoading(true)
-
-		setTimeout(() => {
-			setLoading(false)
-		}, 6000)
-	}
-
+	const { fetchNextConversations, loading, finished } =
+		useFetchConversations()
 	useInfiniteScroll({
 		querySelector: 'nav > div:nth-child(2)',
 		loading,
-		func: loadMoreData,
+		func: fetchNextConversations,
+		removeEvent: finished,
 	})
 
 	const handleTabSwitch = (tab: string) => {
 		setActiveTab(tab)
 	}
 
-	useEffect(() => {
-		console.log(state.conversations)
-	}, [state])
+	// useEffect(() => {
+	// 	console.log(state.conversations)
+	// }, [state])
 
 	return (
 		<div id='sidebar-container'>
@@ -74,7 +66,7 @@ const Sidebar = (_: ISidebar) => {
 						))}
 					</ol>
 				) : (
-					<></>
+					<Spinner />
 				)}
 				{loading ? <Spinner /> : <></>}
 			</div>

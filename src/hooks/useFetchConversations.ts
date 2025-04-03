@@ -1,0 +1,85 @@
+import { useEffect, useState, useRef, useCallback } from 'react'
+import useFetch from './useFetch'
+import { useStorage } from './useStorage'
+import appConfig from '../config/appConfig'
+import { IRequestHeaders } from '../types/interfaces/requestHeadersTypes'
+import { IConversationFetchResponse } from '../types/interfaces/conversationTypes'
+
+const MAX_CONVERSATIONS_LIMIT = appConfig.maxConversationFetchLimit
+
+function useFetchConversations() {
+	const [loading, setLoading] = useState<boolean>(false)
+	const { dispatch, state } = useStorage()
+	const { func } = useFetch({
+		url: `${appConfig.chatGPTBaseUrl}/conversations`,
+	})
+
+	const previousState = useRef(state)
+
+	useEffect(() => {
+		previousState.current = state
+	}, [state])
+
+	const fetchConversations = useCallback(
+		async (
+			limit = MAX_CONVERSATIONS_LIMIT,
+			offset = 0,
+			headers?: IRequestHeaders
+		) => {
+			setLoading(true)
+			try {
+				const queryParams = `offset=${offset}&limit=${limit}&order=updated`
+				const data = (await func(queryParams, {
+					headers: {
+						Authorization: headers?.Authorization
+							? headers.Authorization
+							: window.__headers__,
+					},
+				})) as unknown as IConversationFetchResponse
+
+				dispatch({ type: 'ADD_CONVERSATION', value: data.items })
+				dispatch({
+					type: 'ADD_META',
+					value: {
+						offset: data.offset,
+						limit: data.limit,
+						total: data.total,
+					},
+				})
+			} catch (e) {
+				console.error('Error fetching conversations:', e)
+			} finally {
+				setLoading(false)
+			}
+		},
+		[dispatch, func]
+	)
+
+	const fetchNextConversations = useCallback(async () => {
+		try {
+			const { offset, limit, total } = previousState.current
+
+			if (offset + limit < total) {
+				await fetchConversations(limit, offset + limit)
+			} else {
+				dispatch({
+					type: 'ADD_FINISHED',
+					value: {
+						finished: true,
+					},
+				})
+			}
+		} catch (e) {
+			console.error('Error fetching next conversations:', e)
+		}
+	}, [fetchConversations, dispatch])
+
+	return {
+		fetchConversations,
+		fetchNextConversations,
+		loading,
+		finished: state.finished,
+	}
+}
+
+export default useFetchConversations

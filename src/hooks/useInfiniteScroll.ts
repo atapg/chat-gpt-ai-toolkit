@@ -5,11 +5,12 @@ const useInfiniteScroll = ({
 	func,
 	loading,
 	querySelector,
+	removeEvent,
 }: IUseInfiniteScroll) => {
 	useEffect(() => {
 		const targetElement = document.querySelector(querySelector)
 
-		const handleScroll = () => {
+		const handleScroll = async () => {
 			if (!targetElement || loading) return
 
 			const bottom =
@@ -19,11 +20,15 @@ const useInfiniteScroll = ({
 				75
 
 			if (bottom) {
-				func()
+				await func()
 			}
 		}
 
 		targetElement?.addEventListener('scroll', handleScroll)
+
+		if (removeEvent) {
+			targetElement?.removeEventListener('scroll', handleScroll)
+		}
 
 		return () => {
 			targetElement?.removeEventListener('scroll', handleScroll)

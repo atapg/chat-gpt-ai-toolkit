@@ -19,7 +19,6 @@ window.fetch = async function (...args) {
 
 	if (response) {
 		url
-		// fetchHandler(response, url)
 	}
 
 	if (response && response.url.includes('conversations')) {

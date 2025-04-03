@@ -1,39 +1,15 @@
 import { useEffect } from 'react'
 import SidebarWrapper from './components/Sidebar'
 import './test.css'
-import { IRequestHeaders } from './types/interfaces/requestHeadersTypes'
-import useFetch from './hooks/useFetch'
-import appConfig from './config/appConfig'
-import { useStorage } from './hooks/useStorage'
-import { IConversationFetchResponse } from './types/interfaces/conversationTypes'
+import useFetchConversations from './hooks/useFetchConversations'
 
 function App() {
-	const { dispatch } = useStorage()
-	const { func } = useFetch({
-		url: `${appConfig.chatGPTBaseUrl}/conversations`,
-	})
+	const { fetchConversations } = useFetchConversations()
 
 	useEffect(() => {
-		const headersRecievedEvent = async (
-			event: CustomEventInit<IRequestHeaders | undefined>
-		) => {
-			try {
-				const data = (await func('offset=0&limit=30&order=updated', {
-					headers: event.detail
-						? Object.fromEntries(Object.entries(event.detail))
-						: undefined,
-				})) as unknown as IConversationFetchResponse
-
-				dispatch({ type: 'ADD_CONVERSATION', value: data.items })
-				dispatch({
-					type: 'ADD_META',
-					value: {
-						offset: data.offset,
-						limit: data.limit,
-						total: data.total,
-					},
-				})
-			} catch (e) {}
+		const headersRecievedEvent = (event: CustomEventInit<any>) => {
+			window.__headers__ = event.detail['Authorization']
+			fetchConversations(undefined, undefined, event.detail)
 		}
 
 		window.addEventListener('headersRecieved', headersRecievedEvent)
@@ -41,11 +17,10 @@ function App() {
 		return () => {
 			window.removeEventListener('headersRecieved', headersRecievedEvent)
 		}
-	}, [])
+	}, [fetchConversations])
 
 	return (
 		<>
-			{/* <p>App</p> */}
 			<SidebarWrapper />
 		</>
 	)

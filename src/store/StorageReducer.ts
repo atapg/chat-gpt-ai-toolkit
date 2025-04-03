@@ -6,6 +6,7 @@ export const initialStorage: IStorageState = {
 	limit: 100,
 	offset: 0,
 	total: 0,
+	finished: false,
 }
 
 export const storageReducer = (
@@ -28,6 +29,12 @@ export const storageReducer = (
 				limit: action.value.limit,
 				offset: action.value.offset,
 				total: action.value.total,
+			}
+
+		case 'ADD_FINISHED':
+			return {
+				...state,
+				finished: action.value.finished,
 			}
 		default:
 			return state

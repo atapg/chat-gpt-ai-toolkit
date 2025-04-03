@@ -6,6 +6,7 @@ export interface IStorageState {
 	limit: number
 	offset: number
 	total: number
+	finished: boolean
 }
 
 export type StorageAction =
@@ -14,6 +15,7 @@ export type StorageAction =
 			value: IConversation[]
 	  }
 	| { type: 'ADD_META'; value: any }
+	| { type: 'ADD_FINISHED'; value: any }
 
 export interface IStorageContextType {
 	state: IStorageState
