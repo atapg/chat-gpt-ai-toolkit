@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ISidebar } from '../../types/interfaces/sidebarTypes'
 import './style.scss'
 import { useStorage } from '../../hooks/useStorage'
@@ -6,6 +6,7 @@ import SidebarItems from './SidebarItems'
 import Spinner from '../Spinner'
 import useInfiniteScroll from '../../hooks/useInfiniteScroll'
 import useFetchConversations from '../../hooks/useFetchConversations'
+import useLocation from '../../hooks/useLocation'
 
 const Sidebar = (_: ISidebar) => {
 	const [activeTab, setActiveTab] = useState('extension')
@@ -18,14 +19,15 @@ const Sidebar = (_: ISidebar) => {
 		func: fetchNextConversations,
 		removeEvent: finished,
 	})
+	const location = useLocation()
 
 	const handleTabSwitch = (tab: string) => {
 		setActiveTab(tab)
 	}
 
-	// useEffect(() => {
-	// 	console.log(state.conversations)
-	// }, [state])
+	useEffect(() => {
+		console.log(location)
+	}, [location])
 
 	return (
 		<div id='sidebar-container'>
@@ -62,6 +64,10 @@ const Sidebar = (_: ISidebar) => {
 								key={conversation.id}
 								conversation={conversation}
 								index={index}
+								active={
+									location.pathname ===
+									`/c/${conversation.id}`
+								}
 							/>
 						))}
 					</ol>

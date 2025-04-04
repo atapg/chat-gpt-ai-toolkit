@@ -40,3 +40,8 @@
 		overflow: hidden;
 	}
 }
+
+.sidebar-item-active {
+	background-color: var(--sidebar-surface-secondary);
+	border-radius: 8px;
+}

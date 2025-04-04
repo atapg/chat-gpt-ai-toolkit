@@ -5,13 +5,15 @@ import './style.scss'
 const SidebarItems = ({
 	conversation,
 	index,
+	active,
 }: {
 	conversation: IConversation
 	index: number
+	active: boolean
 }) => {
 	return (
 		<li
-			className='sidebar-item'
+			className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`}
 			data-testid={`history-item-${index}`}
 			onClick={() => handleNavigation(`/c/${conversation.id}`)}
 		>
