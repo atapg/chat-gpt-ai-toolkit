@@ -19,6 +19,8 @@ window.fetch = async function (...args) {
 
 	if (response) {
 		url
+
+		// TODO - add new chat creation /conversations POST
 	}
 
 	if (response && response.url.includes('conversations')) {

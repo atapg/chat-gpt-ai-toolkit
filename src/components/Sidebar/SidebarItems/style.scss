@@ -17,13 +17,12 @@
 
 	& > div:hover {
 		background-color: var(--sidebar-surface-secondary);
+
+		.options-btn {
+			visibility: visible;
+		}
 	}
 
-	& > div:active {
-		opacity: 0.9;
-	}
-
-	& > div:active,
 	& > div:hover {
 		transform: scale(0.98);
 	}
@@ -32,12 +31,37 @@
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
+		width: 100%;
+
+		&:active {
+			.sidebar-item-content {
+				opacity: 0.9;
+			}
+		}
 	}
 
 	.group-active-scale {
 		transform: scale(0.98);
 		transition: transform 0.1s ease-in-out;
 		overflow: hidden;
+		position: relative;
+		width: 100%;
+
+		.options-btn {
+			position: absolute;
+			right: 0;
+			color: grey;
+			width: 20px;
+			height: 20px;
+			visibility: hidden;
+
+			&:active {
+				.options-btn {
+					opacity: 0.9;
+					color: white;
+				}
+			}
+		}
 	}
 }
 
