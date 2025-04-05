@@ -1,4 +1,4 @@
-import { IRequestHeaders } from '../types/interfaces/requestHeadersTypes'
+import { fetchHandler } from '../handlers'
 
 // *** This script must be injected into the content script at first before all requests ***
 const originalFetch = window.fetch
@@ -18,20 +18,7 @@ window.fetch = async function (...args) {
 	}
 
 	if (response) {
-		url
-
-		// TODO - add new chat creation /conversations POST
-	}
-
-	if (response && response.url.includes('conversations')) {
-		if (args[1] && args[1].headers) {
-			const headersEvent = new CustomEvent('headersRecieved', {
-				detail: args[1].headers as unknown as IRequestHeaders,
-			})
-
-			window.dispatchEvent(headersEvent)
-			window.__headers__ = args[1].headers as unknown as IRequestHeaders
-		}
+		fetchHandler(response, url, args)
 	}
 
 	return response

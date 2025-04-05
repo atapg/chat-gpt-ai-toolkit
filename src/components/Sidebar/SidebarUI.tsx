@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ISidebar } from '../../types/interfaces/sidebarTypes'
 import './style.scss'
 import { useStorage } from '../../hooks/useStorage'
@@ -24,10 +24,6 @@ const Sidebar = (_: ISidebar) => {
 	const handleTabSwitch = (tab: string) => {
 		setActiveTab(tab)
 	}
-
-	useEffect(() => {
-		console.log(location)
-	}, [location])
 
 	return (
 		<div id='sidebar-container'>

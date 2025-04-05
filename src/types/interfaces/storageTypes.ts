@@ -16,6 +16,7 @@ export type StorageAction =
 	  }
 	| { type: 'ADD_META'; value: any }
 	| { type: 'ADD_FINISHED'; value: any }
+	| { type: 'PREPEND_CONVERSATION'; value: any }
 
 export interface IStorageContextType {
 	state: IStorageState

@@ -5,11 +5,11 @@ import {
 	IUseFetchResponse,
 } from '../types/interfaces/useFetchTypes'
 
-function useFetch<T>({
+const useFetch = <T>({
 	url,
 	defaultParams,
 	options,
-}: IUseFetch): IUseFetchResponse<T> {
+}: IUseFetch): IUseFetchResponse<T> => {
 	const [data, setData] = useState<T | null>(null)
 	const [isLoading, setIsLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)

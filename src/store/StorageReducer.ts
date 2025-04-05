@@ -23,12 +23,15 @@ export const storageReducer = (
 				],
 			}
 
+		case 'PREPEND_CONVERSATION':
+			state.conversations.unshift(action.value[0] as IConversation)
+
+			return state
+
 		case 'ADD_META':
 			return {
 				...state,
-				limit: action.value.limit,
-				offset: action.value.offset,
-				total: action.value.total,
+				...action.value,
 			}
 
 		case 'ADD_FINISHED':

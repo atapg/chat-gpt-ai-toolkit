@@ -23,3 +23,8 @@ export interface IConversationFetchResponse {
 	offset: number
 	total: number
 }
+
+export enum AddConversationsToStateEnum {
+	APPEND = 'APPEND',
+	PREPEND = 'PREPEND',
+}
