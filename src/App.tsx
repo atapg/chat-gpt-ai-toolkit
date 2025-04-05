@@ -1,12 +1,13 @@
 import SidebarWrapper from './components/Sidebar'
-import './test.css'
 import useInitialFetch from './hooks/useInitialFetch'
+import Dev from './components/Dev'
 
 function App() {
 	useInitialFetch()
 
 	return (
 		<>
+			<Dev />
 			<SidebarWrapper />
 		</>
 	)

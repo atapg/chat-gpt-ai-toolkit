@@ -5,9 +5,11 @@ export const conversationPostHandler = async (
 	// Check for new conversation post request
 	if (args[1] && args[1]?.method) {
 		if (args[1]?.method === 'POST') {
-			const headersEvent = new CustomEvent('newChatCreated')
+			if (!JSON.parse(args[1].body as string)['conversation_id']) {
+				const headersEvent = new CustomEvent('newChatCreated')
 
-			window.dispatchEvent(headersEvent)
+				window.dispatchEvent(headersEvent)
+			}
 		}
 	}
 }
