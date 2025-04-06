@@ -1,6 +1,7 @@
 import { IConversation } from '../../../types/interfaces/conversationTypes'
 import { handleNavigation } from '../../../utils/navigation'
 import './style.scss'
+import DropDown from '../../ContextMenu/DropDown'
 
 const SidebarItems = ({
 	conversation,
@@ -11,13 +12,6 @@ const SidebarItems = ({
 	index: number
 	active: boolean
 }) => {
-	// Function to handle the 3-dots button click
-	const handleDotsClick = (e: React.MouseEvent) => {
-		e.stopPropagation() // Prevents the list item click from being triggered
-		// Here you can open a dropdown or perform actions related to the chat
-		console.log('Show options for conversation:', conversation.id)
-	}
-
 	return (
 		<li
 			className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`}
@@ -40,15 +34,22 @@ const SidebarItems = ({
 						{conversation.title}
 					</div>
 					{/* Add the 3-dots button */}
-					<button
-						className='options-btn'
-						onClick={handleDotsClick}
-						data-testid={`three-dots-${index}`}
+					<DropDown
+						button={(toggleFunction: () => void) => (
+							<DropDown.Button
+								onClick={toggleFunction}
+								className='options-btn'
+							>
+								•••
+							</DropDown.Button>
+						)}
 					>
-						•••
-					</button>
+						<DropDown.Item>Delete</DropDown.Item>
+						<DropDown.Item>Share</DropDown.Item>
+					</DropDown>
 				</div>
 			</div>
+			{/* {showDialog ? <SidebarItemContextMenu /> : <></>} */}
 		</li>
 	)
 }

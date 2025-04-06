@@ -18,8 +18,15 @@ import {
 	// Inject react app style
 	injectStyle(chrome.runtime.getURL('index.css'))
 
+	// Inject modal root element
+	const modal = document.createElement('div')
+	modal.id = 'modalRoot'
+
+	const cleanupModalObserver = await injectHTMLElement(modal)
+
 	// Clean observers after 20 seconds
 	setTimeout(() => {
 		cleanupAppObserver()
+		cleanupModalObserver()
 	}, 20000)
 })()

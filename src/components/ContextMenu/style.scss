@@ -1,5 +1,52 @@
-.sidebar-item-context-menu {
+.dropdown-container {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-overlay {
 	position: fixed;
-	background-color: red;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.3);
+	z-index: 999;
+}
+
+.dropdown-menu-container {
+	position: fixed;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	min-width: 100px;
+	background-color: white;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	border-radius: 15px;
+	z-index: 1000;
+	transition: top 0.04s ease;
+	overflow: hidden;
+	background-color: var(--composer-surface-primary);
+
+	ul {
+		padding: 10px;
+		overflow: hidden;
+		border-radius: inherit;
+	}
+}
+
+.dropdown-up {
+	transform: translateY(-100%);
+	top: auto;
+	bottom: 100%;
+}
+
+.dropdown-item {
+	padding: 10px;
+	cursor: pointer;
+	transition: 0.1s ease-in-out all;
+	border-radius: 7.5px;
+}
+
+.dropdown-item:hover {
+	background-color: var(--main-surface-tertiary);
 }
