@@ -1,4 +1,5 @@
 import Modal from '..'
+import useFetchConversations from '../../../hooks/useFetchConversations'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { IConversation } from '../../../types/interfaces/conversationTypes'
 
@@ -12,6 +13,7 @@ const SidebarDeleteModal = ({
 	toggleShowModal: (show?: boolean) => void
 }) => {
 	const { push } = useNavigation()
+	const { deleteConversation } = useFetchConversations()
 
 	return (
 		<Modal
@@ -42,7 +44,13 @@ const SidebarDeleteModal = ({
 				<div className='flex w-full flex-row items-center justify-end'>
 					<div className='flex-0'>
 						<div className='flex flex-col gap-3 sm:flex-row-reverse mt-5 sm:mt-4'>
-							<button className='btn relative btn-danger'>
+							<button
+								className='btn relative btn-danger'
+								onClick={() => {
+									toggleShowModal(false)
+									deleteConversation(conversation.id)
+								}}
+							>
 								<div className='flex items-center justify-center'>
 									Delete
 								</div>

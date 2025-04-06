@@ -11,7 +11,10 @@ const useFetchConversations = () => {
 	const [loading, setLoading] = useState<boolean>(false)
 	const { dispatch, state } = useStorage()
 	const { func } = useFetch({
-		url: `${appConfig.chatGPTBaseUrl}/conversations`,
+		url: `${appConfig.chatGPTBaseUrl}/conversations?`,
+	})
+	const { func: conversationFunc } = useFetch({
+		url: `${appConfig.chatGPTBaseUrl}/conversation`,
 	})
 
 	const previousState = useRef(state)
@@ -65,6 +68,38 @@ const useFetchConversations = () => {
 		}
 	}, [fetchConversations, dispatch])
 
+	const deleteConversation = async (
+		conversationId: string,
+		callback?: () => Promise<void>
+	) => {
+		setLoading(true)
+		try {
+			const data = (await conversationFunc(`/${conversationId}`, {
+				method: 'PATCH',
+				headers: {
+					Authorization: window.__token__,
+					'content-type': 'application/json',
+				},
+				body: JSON.stringify({
+					is_visible: false,
+				}),
+			})) as unknown as IConversationFetchResponse
+
+			dispatch({ type: 'DELETE_CONVERSATION', value: conversationId })
+			dispatch({
+				type: 'ADD_META',
+				value: {
+					total: data.total - 1,
+				},
+			})
+		} catch (e) {
+			console.log(e)
+		} finally {
+			setLoading(false)
+			callback && (await callback())
+		}
+	}
+
 	const addToState = (
 		data: IConversationFetchResponse,
 		type: AddConversationsToStateEnum
@@ -102,6 +137,7 @@ const useFetchConversations = () => {
 		fetchNextConversations,
 		loading,
 		finished: state.finished,
+		deleteConversation,
 	}
 }
 

@@ -22,10 +22,10 @@ const useFetch = <T>({
 			let endpoint = url
 
 			if (newParams) {
-				endpoint += `?${newParams}`
+				endpoint += `${newParams}`
 			} else {
 				if (defaultParams) {
-					endpoint += `?${defaultParams}`
+					endpoint += `${defaultParams}`
 				}
 			}
 

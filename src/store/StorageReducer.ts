@@ -28,6 +28,14 @@ export const storageReducer = (
 
 			return state
 
+		case 'DELETE_CONVERSATION':
+			return {
+				...state,
+				conversations: state.conversations.filter(
+					(conversation) => conversation.id !== action.value
+				),
+			}
+
 		case 'ADD_META':
 			return {
 				...state,
