@@ -2,10 +2,8 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import useFetch from './useFetch'
 import { useStorage } from './useStorage'
 import appConfig from '../config/appConfig'
-import {
-	AddConversationsToStateEnum,
-	IConversationFetchResponse,
-} from '../types/interfaces/conversationTypes'
+import { IConversationFetchResponse } from '../types/interfaces/conversationTypes'
+import { AddConversationsToStateEnum } from '../types/enums/conversationEnums'
 
 const MAX_CONVERSATIONS_LIMIT = appConfig.maxConversationFetchLimit
 

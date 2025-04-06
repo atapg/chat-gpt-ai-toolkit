@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import useFetchConversations from './useFetchConversations'
-import { AddConversationsToStateEnum } from '../types/interfaces/conversationTypes'
+import { AddConversationsToStateEnum } from '../types/enums/conversationEnums'
 
 const useInitialFetch = () => {
 	const { fetchConversations } = useFetchConversations()

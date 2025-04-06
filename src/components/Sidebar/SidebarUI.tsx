@@ -9,7 +9,7 @@ import useFetchConversations from '../../hooks/useFetchConversations'
 import useLocation from '../../hooks/useLocation'
 
 const Sidebar = (_: ISidebar) => {
-	const [activeTab, setActiveTab] = useState('extension')
+	const [activeTab, setActiveTab] = useState('original')
 	const { state } = useStorage()
 	const { fetchNextConversations, loading, finished } =
 		useFetchConversations()

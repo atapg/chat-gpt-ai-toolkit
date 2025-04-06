@@ -1,4 +1,4 @@
-import { getUrlPathName } from '../helpers/requestHelpers'
+import { getUrlPathName } from '../utils/helpers'
 import {
 	conversationPostHandler,
 	conversationsGetHandler,
