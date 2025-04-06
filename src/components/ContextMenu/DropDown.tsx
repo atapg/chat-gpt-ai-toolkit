@@ -9,6 +9,7 @@ import React, {
 } from 'react'
 import './style.scss'
 import { createPortal } from 'react-dom'
+import appConfig from '../../config/appConfig'
 
 const DropDownContext = createContext<any>({})
 
@@ -22,7 +23,6 @@ const DropDown = ({
 }) => {
 	const [isOpen, setIsOpen] = useState(false)
 	const [style, setStyle] = useState({})
-	const overlayRef = useRef<HTMLDivElement | null>(null)
 	const buttonRef = useRef<HTMLButtonElement>(null)
 	const menuRef = useRef<HTMLDivElement>(null)
 
@@ -67,16 +67,20 @@ const DropDown = ({
 
 	return (
 		<DropDownContext.Provider
-			value={{ isOpen, toggleDropdown, setButtonRef }}
+			value={{
+				isOpen,
+				toggleDropdown,
+				setButtonRef,
+				closeDropdown: handleOverlayClick,
+			}}
 		>
 			<>
 				{button(toggleDropdown)}
-				{isOpen &&
+				{isOpen ? (
 					createPortal(
 						<>
 							<div
 								className='dropdown-overlay '
-								ref={overlayRef}
 								onClick={handleOverlayClick}
 							></div>
 							<div
@@ -87,8 +91,13 @@ const DropDown = ({
 								<ul className='dropdown-menu'>{children}</ul>
 							</div>
 						</>,
-						document.getElementById('modalRoot') as HTMLElement
-					)}
+						document.getElementById(
+							appConfig.modalRootName
+						) as HTMLElement
+					)
+				) : (
+					<></>
+				)}
 			</>
 		</DropDownContext.Provider>
 	)
@@ -99,13 +108,24 @@ export default DropDown
 DropDown.Item = ({
 	children,
 	icon,
+	onClick,
 	...rest
 }: {
 	icon?: ReactElement
+	onClick?: () => void
 	[key: string]: any
 }) => {
+	const { closeDropdown } = useContext(DropDownContext)
+
 	return (
-		<li className='dropdown-item' {...rest}>
+		<li
+			className='dropdown-item'
+			{...rest}
+			onClick={() => {
+				closeDropdown()
+				onClick && onClick()
+			}}
+		>
 			{icon ? <div className='dropdown-icon'>{icon}</div> : null}
 			{children}
 		</li>
