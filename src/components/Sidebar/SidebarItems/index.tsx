@@ -44,8 +44,14 @@ const SidebarItems = ({
 							</DropDown.Button>
 						)}
 					>
-						<DropDown.Item>Delete</DropDown.Item>
 						<DropDown.Item>Share</DropDown.Item>
+						<DropDown.Item
+							style={{
+								color: 'var(--text-error)',
+							}}
+						>
+							Delete
+						</DropDown.Item>
 					</DropDown>
 				</div>
 			</div>
