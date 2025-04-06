@@ -4,6 +4,7 @@ import DropDown from '../../ContextMenu/DropDown'
 import { useNavigation } from '../../../hooks/useNavigation'
 import ShareIcon from '../../SvgIcons/ShareIcon'
 import DeleteIcon from '../../SvgIcons/DeleteIcon'
+import PencilIcon from '../../SvgIcons/PencilIcon'
 
 const SidebarItems = ({
 	conversation,
@@ -47,6 +48,9 @@ const SidebarItems = ({
 					>
 						<DropDown.Item icon={<ShareIcon />}>
 							Share
+						</DropDown.Item>
+						<DropDown.Item icon={<PencilIcon />}>
+							Rename
 						</DropDown.Item>
 						<DropDown.Item
 							style={{
