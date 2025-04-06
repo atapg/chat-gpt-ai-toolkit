@@ -3,16 +3,19 @@ import appConfig from '../../config/appConfig'
 import { ReactNode } from 'react'
 import Divider from '../UI/Divider'
 import './style.scss'
+import Spinner from '../Spinner'
 
 const Modal = ({
 	children,
 	title,
 	show,
 	toggleShow,
+	loading = false,
 }: {
 	children?: ReactNode
 	title?: ReactNode
 	show: boolean
+	loading?: boolean
 	toggleShow: (show?: boolean) => void
 }) => {
 	const handleOverlayClick = () => {
@@ -28,22 +31,28 @@ const Modal = ({
 							className='modal-overlay '
 							onClick={handleOverlayClick}
 						></div>
-						<div className='modal-container flex flex-col items-center justify-between'>
-							{title ? (
-								<div
-									style={{
-										width: '100%',
-										fontWeight: 'bold',
-									}}
-								>
-									{title}
-								</div>
-							) : (
-								<></>
-							)}
-							<Divider />
-							{children}
-						</div>
+						{loading ? (
+							<div className='p-6 center'>
+								<Spinner />
+							</div>
+						) : (
+							<div className='modal-container flex flex-col items-center justify-between'>
+								{title ? (
+									<div
+										style={{
+											width: '100%',
+											fontWeight: 'bold',
+										}}
+									>
+										{title}
+									</div>
+								) : (
+									<></>
+								)}
+								<Divider />
+								{children}
+							</div>
+						)}
 					</>,
 					document.getElementById(
 						appConfig.modalRootName

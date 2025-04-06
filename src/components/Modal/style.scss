@@ -17,6 +17,7 @@
 	background-color: var(--main-surface-secondary);
 	border-radius: var(--radius-2xl);
 	overflow: hidden;
+	max-width: 550px;
 
 	.modal-title {
 		width: 100%;

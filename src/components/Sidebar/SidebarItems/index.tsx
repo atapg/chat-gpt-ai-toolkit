@@ -7,6 +7,7 @@ import DeleteIcon from '../../SvgIcons/DeleteIcon'
 import PencilIcon from '../../SvgIcons/PencilIcon'
 import { useState } from 'react'
 import SidebarDeleteModal from '../../Modal/SidebarDeleteModal'
+import SidebarShareModal from '../../Modal/SidebarShareModal'
 
 const SidebarItems = ({
 	conversation,
@@ -19,12 +20,21 @@ const SidebarItems = ({
 }) => {
 	const { push } = useNavigation()
 	const [showModal, setShowModal] = useState<boolean>(false)
+	const [showShareModal, setShowShareModal] = useState<boolean>(false)
 
 	const toggleShowModal = (show?: boolean) => {
 		if (show) {
 			setShowModal(show)
 		} else {
 			setShowModal((prevShow) => !prevShow)
+		}
+	}
+
+	const toggleShowShareModal = (show?: boolean) => {
+		if (show) {
+			setShowShareModal(show)
+		} else {
+			setShowShareModal((prevShow) => !prevShow)
 		}
 	}
 
@@ -61,7 +71,10 @@ const SidebarItems = ({
 								</DropDown.Button>
 							)}
 						>
-							<DropDown.Item icon={<ShareIcon />}>
+							<DropDown.Item
+								onClick={() => toggleShowShareModal(true)}
+								icon={<ShareIcon />}
+							>
 								Share
 							</DropDown.Item>
 							<DropDown.Item icon={<PencilIcon />}>
@@ -94,6 +107,14 @@ const SidebarItems = ({
 				/>
 			) : (
 				<></>
+			)}
+			{showShareModal ? (
+				<SidebarShareModal
+					showModal={showShareModal}
+					toggleShowModal={toggleShowShareModal}
+				/>
+			) : (
+				<> </>
 			)}
 		</>
 	)
