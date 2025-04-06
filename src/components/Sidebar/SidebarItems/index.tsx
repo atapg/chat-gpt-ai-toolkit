@@ -1,7 +1,7 @@
 import { IConversation } from '../../../types/interfaces/conversationTypes'
-import { handleNavigation } from '../../../utils/navigation'
 import './style.scss'
 import DropDown from '../../ContextMenu/DropDown'
+import { useNavigation } from '../../../hooks/useNavigation'
 
 const SidebarItems = ({
 	conversation,
@@ -12,6 +12,7 @@ const SidebarItems = ({
 	index: number
 	active: boolean
 }) => {
+	const { push } = useNavigation()
 	return (
 		<li
 			className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`}
@@ -20,9 +21,7 @@ const SidebarItems = ({
 			<div draggable='true' className='sidebar-item-content group'>
 				<div className='group-active-scale flex items-center'>
 					<div
-						onClick={() =>
-							handleNavigation(`/c/${conversation.id}`)
-						}
+						onClick={() => push(`/c/${conversation.id}`)}
 						className='sidebar-item-content'
 						dir='auto'
 						title={conversation.title}
