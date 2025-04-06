@@ -1,4 +1,5 @@
 import DropDown from './ContextMenu/DropDown'
+import ShareIcon from './SvgIcons/ShareIcon'
 
 const Dev = () => {
 	// const conversation = {
@@ -74,8 +75,10 @@ const Dev = () => {
 					</DropDown.Button>
 				)}
 			>
-				<DropDown.Item>Delete</DropDown.Item>
-				<DropDown.Item>Share</DropDown.Item>
+				<DropDown.Item icon={<ShareIcon />}>
+					Delet dallsae
+				</DropDown.Item>
+				<DropDown.Item icon={<ShareIcon />}>Share</DropDown.Item>
 			</DropDown>
 
 			<h2>

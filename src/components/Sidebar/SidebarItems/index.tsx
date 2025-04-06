@@ -2,6 +2,8 @@ import { IConversation } from '../../../types/interfaces/conversationTypes'
 import './style.scss'
 import DropDown from '../../ContextMenu/DropDown'
 import { useNavigation } from '../../../hooks/useNavigation'
+import ShareIcon from '../../SvgIcons/ShareIcon'
+import DeleteIcon from '../../SvgIcons/DeleteIcon'
 
 const SidebarItems = ({
 	conversation,
@@ -43,11 +45,20 @@ const SidebarItems = ({
 							</DropDown.Button>
 						)}
 					>
-						<DropDown.Item>Share</DropDown.Item>
+						<DropDown.Item icon={<ShareIcon />}>
+							Share
+						</DropDown.Item>
 						<DropDown.Item
 							style={{
 								color: 'var(--text-error)',
 							}}
+							icon={
+								<DeleteIcon
+									style={{
+										fill: 'var(--text-error)',
+									}}
+								/>
+							}
 						>
 							Delete
 						</DropDown.Item>

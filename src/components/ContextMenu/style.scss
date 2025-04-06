@@ -19,7 +19,6 @@
 	margin: 0;
 	padding: 0;
 	min-width: 100px;
-	background-color: white;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	border-radius: 15px;
 	z-index: 1000;
@@ -31,6 +30,12 @@
 		padding: 10px;
 		overflow: hidden;
 		border-radius: inherit;
+
+		li {
+			svg {
+				fill: var(--text-primary);
+			}
+		}
 	}
 }
 
@@ -45,6 +50,13 @@
 	cursor: pointer;
 	transition: 0.1s ease-in-out all;
 	border-radius: 7.5px;
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	gap: 10px;
+
+	.dropdown-icon {
+	}
 }
 
 .dropdown-item:hover {

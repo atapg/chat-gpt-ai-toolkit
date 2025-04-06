@@ -5,6 +5,7 @@ import React, {
 	useContext,
 	RefObject,
 	useLayoutEffect,
+	ReactElement,
 } from 'react'
 import './style.scss'
 import { createPortal } from 'react-dom'
@@ -74,7 +75,7 @@ const DropDown = ({
 					createPortal(
 						<>
 							<div
-								className='dropdown-overlay'
+								className='dropdown-overlay '
 								ref={overlayRef}
 								onClick={handleOverlayClick}
 							></div>
@@ -95,9 +96,17 @@ const DropDown = ({
 
 export default DropDown
 
-DropDown.Item = ({ children, ...rest }: { [key: string]: any }) => {
+DropDown.Item = ({
+	children,
+	icon,
+	...rest
+}: {
+	icon?: ReactElement
+	[key: string]: any
+}) => {
 	return (
 		<li className='dropdown-item' {...rest}>
+			{icon ? <div className='dropdown-icon'>{icon}</div> : null}
 			{children}
 		</li>
 	)
