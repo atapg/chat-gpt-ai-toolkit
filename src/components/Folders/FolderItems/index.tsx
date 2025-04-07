@@ -7,6 +7,7 @@ import SidebarItems from '../../Sidebar/SidebarItems'
 import DropDown from '../../ContextMenu/DropDown'
 import PencilIcon from '../../SvgIcons/PencilIcon'
 import DeleteIcon from '../../SvgIcons/DeleteIcon'
+import ChatIcon from '../../SvgIcons/ChatIcon'
 
 const FolderItems = ({ folder, level }: { folder: IFolder; level: number }) => {
 	const [isOpen, setIsOpen] = useState(false)
@@ -96,6 +97,13 @@ const FolderItems = ({ folder, level }: { folder: IFolder; level: number }) => {
 								active={false}
 								index={index}
 								level={level - 1}
+								icon={
+									<ChatIcon
+										style={{
+											fill: 'var(--text-primary)',
+										}}
+									/>
+								}
 							/>
 						))}
 					</ol>

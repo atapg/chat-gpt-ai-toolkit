@@ -8,7 +8,7 @@ import useInfiniteScroll from '../../hooks/useInfiniteScroll'
 import useFetchConversations from '../../hooks/useFetchConversations'
 import useLocation from '../../hooks/useLocation'
 import ExtensionSidebar from '../ExtensionSidebar'
-import { IFolder } from '../../types/interfaces/folderTypes'
+import { useFolders } from '../../hooks/useFolders'
 
 const Sidebar = (_: ISidebar) => {
 	const [activeTab, setActiveTab] = useState('original')
@@ -22,59 +22,11 @@ const Sidebar = (_: ISidebar) => {
 		removeEvent: finished,
 	})
 	const location = useLocation()
+	const { folders } = useFolders()
 
 	const handleTabSwitch = (tab: string) => {
 		setActiveTab(tab)
 	}
-
-	const dummyData: IFolder[] = [
-		{
-			id: '5',
-			name: 'Second Main',
-			parentId: '1',
-			color: '#33c3ff',
-			conversations: [
-				{
-					id: '1231',
-					title: 'titleee',
-				},
-			],
-			subFolders: [
-				{
-					id: '5',
-					name: 'Second Main',
-					parentId: '1',
-					color: '#33c3ff',
-					conversations: [
-						{
-							id: '1231',
-							title: 'titleee',
-						},
-					],
-					subFolders: [],
-					createdAt: new Date('2025-04-06T10:15:00Z'),
-					updatedAt: new Date('2025-04-06T10:20:00Z'),
-				},
-			],
-			createdAt: new Date('2025-04-06T10:15:00Z'),
-			updatedAt: new Date('2025-04-06T10:20:00Z'),
-		},
-		{
-			id: '5',
-			name: 'Main Main',
-			parentId: '1',
-			color: '#33c3ff',
-			conversations: [
-				{
-					id: '1231',
-					title: 'titldsadsadsadsaeee',
-				},
-			],
-			subFolders: [],
-			createdAt: new Date('2025-04-06T10:15:00Z'),
-			updatedAt: new Date('2025-04-06T10:20:00Z'),
-		},
-	]
 
 	return (
 		<div id='sidebar-container'>
@@ -86,7 +38,7 @@ const Sidebar = (_: ISidebar) => {
 					}`}
 					onClick={() => handleTabSwitch('extension')}
 				>
-					Extension
+					Folders
 				</button>
 				<button
 					className={`tab ${
@@ -94,7 +46,7 @@ const Sidebar = (_: ISidebar) => {
 					}`}
 					onClick={() => handleTabSwitch('original')}
 				>
-					Original
+					All
 				</button>
 			</div>
 
@@ -129,7 +81,7 @@ const Sidebar = (_: ISidebar) => {
 					activeTab === 'extension' ? 'tab-content' : 'display-none'
 				}`}
 			>
-				<ExtensionSidebar folders={dummyData} />
+				{folders ? <ExtensionSidebar folders={folders} /> : <Spinner />}
 			</div>
 		</div>
 	)

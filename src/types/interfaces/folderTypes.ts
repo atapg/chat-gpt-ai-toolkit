@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 export interface IFolder {
 	id: string
 	name: string
@@ -5,6 +7,7 @@ export interface IFolder {
 	color?: string
 	conversations: IFolderConversation[]
 	subFolders: IFolder[]
+	icon?: ReactNode
 	createdAt: Date
 	updatedAt: Date
 }

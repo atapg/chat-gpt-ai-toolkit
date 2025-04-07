@@ -31,7 +31,10 @@
 		}
 	}
 
-	.folder-item-content.first-level {
+	.folder-item-no-conversations {
+		padding: 0 15px;
+		font-size: 0.8rem;
+		color: var(--text-quaternary);
 	}
 
 	.folder-details-wrapper {

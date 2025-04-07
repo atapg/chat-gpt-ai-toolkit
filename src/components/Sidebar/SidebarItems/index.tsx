@@ -5,7 +5,7 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import ShareIcon from '../../SvgIcons/ShareIcon'
 import DeleteIcon from '../../SvgIcons/DeleteIcon'
 import PencilIcon from '../../SvgIcons/PencilIcon'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import SidebarDeleteModal from '../../Modal/SidebarDeleteModal'
 import SidebarShareModal from '../../Modal/SidebarShareModal'
 import { IFolderConversation } from '../../../types/interfaces/folderTypes'
@@ -15,11 +15,13 @@ const SidebarItems = ({
 	index,
 	active,
 	level = 0,
+	icon,
 }: {
 	conversation: IConversation | IFolderConversation
 	index: number
 	active: boolean
 	level?: number
+	icon?: ReactNode
 }) => {
 	const { push } = useNavigation()
 	const [showModal, setShowModal] = useState<boolean>(false)
@@ -62,6 +64,9 @@ const SidebarItems = ({
 								paddingLeft: `${level * 10}px`,
 							}}
 						>
+							<span style={{ marginRight: '4px' }}>
+								{icon ? icon : <></>}
+							</span>
 							{conversation.title}
 						</div>
 						{/* Add the 3-dots button */}
