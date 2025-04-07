@@ -4,6 +4,9 @@ import { useState } from 'react'
 import ChevronBottom from '../../SvgIcons/ChevronBottom'
 import ChevronRight from '../../SvgIcons/ChevronRight'
 import SidebarItems from '../../Sidebar/SidebarItems'
+import DropDown from '../../ContextMenu/DropDown'
+import PencilIcon from '../../SvgIcons/PencilIcon'
+import DeleteIcon from '../../SvgIcons/DeleteIcon'
 
 const FolderItems = ({ folder, level }: { folder: IFolder; level: number }) => {
 	const [isOpen, setIsOpen] = useState(false)
@@ -19,9 +22,8 @@ const FolderItems = ({ folder, level }: { folder: IFolder; level: number }) => {
 				style={{
 					paddingLeft: `${level * 10}px`,
 				}}
-				onClick={handleToggle}
 			>
-				<div className='folder-item-icon'>
+				<div className='folder-item-icon' onClick={handleToggle}>
 					<span>
 						{isOpen ? (
 							<ChevronBottom
@@ -38,7 +40,40 @@ const FolderItems = ({ folder, level }: { folder: IFolder; level: number }) => {
 						)}
 					</span>
 				</div>
-				<div className='folder-item-title'>{folder.name}</div>
+				<div className='group-active-scale folder-details-wrapper flex items-center'>
+					<div className='folder-item-title' onClick={handleToggle}>
+						{folder.name}
+					</div>
+					<DropDown
+						button={(toggleFunction: () => void) => (
+							<DropDown.Button
+								onClick={toggleFunction}
+								className='options-btn'
+							>
+								•••
+							</DropDown.Button>
+						)}
+					>
+						<DropDown.Item icon={<PencilIcon />}>
+							Rename
+						</DropDown.Item>
+						<DropDown.Item
+							onClick={() => {}}
+							style={{
+								color: 'var(--text-error)',
+							}}
+							icon={
+								<DeleteIcon
+									style={{
+										fill: 'var(--text-error)',
+									}}
+								/>
+							}
+						>
+							Delete
+						</DropDown.Item>
+					</DropDown>
+				</div>
 			</div>
 			<div
 				className={`folder-item-subfolders ${
