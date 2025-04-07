@@ -2,7 +2,11 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import useFetch from './useFetch'
 import { useStorage } from './useStorage'
 import appConfig from '../config/appConfig'
-import { IConversationFetchResponse } from '../types/interfaces/conversationTypes'
+import {
+	IConversation,
+	IConversationFetchResponse,
+	IConversationShareData,
+} from '../types/interfaces/conversationTypes'
 import { AddConversationsToStateEnum } from '../types/enums/conversationEnums'
 
 const MAX_CONVERSATIONS_LIMIT = appConfig.maxConversationFetchLimit
@@ -15,6 +19,9 @@ const useFetchConversations = () => {
 	})
 	const { func: conversationFunc } = useFetch({
 		url: `${appConfig.chatGPTBaseUrl}/conversation`,
+	})
+	const { func: shareFunc } = useFetch({
+		url: `${appConfig.chatGPTBaseUrl}/share`,
 	})
 
 	const previousState = useRef(state)
@@ -74,7 +81,7 @@ const useFetchConversations = () => {
 	) => {
 		setLoading(true)
 		try {
-			const data = (await conversationFunc(`/${conversationId}`, {
+			const data = await conversationFunc(`/${conversationId}`, {
 				method: 'PATCH',
 				headers: {
 					Authorization: window.__token__,
@@ -83,13 +90,15 @@ const useFetchConversations = () => {
 				body: JSON.stringify({
 					is_visible: false,
 				}),
-			})) as unknown as IConversationFetchResponse
+			})
+
+			if (!data) throw new Error('Error deleting conversation')
 
 			dispatch({ type: 'DELETE_CONVERSATION', value: conversationId })
 			dispatch({
 				type: 'ADD_META',
 				value: {
-					total: data.total - 1,
+					total: state.total - 1,
 				},
 			})
 		} catch (e) {
@@ -97,6 +106,45 @@ const useFetchConversations = () => {
 		} finally {
 			setLoading(false)
 			callback && (await callback())
+		}
+	}
+
+	const shareConversation = async (
+		conversationId: string
+	): Promise<IConversationShareData | undefined> => {
+		setLoading(true)
+		try {
+			const data = (await conversationFunc(`/${conversationId}`, {
+				method: 'GET',
+				headers: {
+					Authorization: window.__token__,
+					'content-type': 'application/json',
+				},
+			})) as unknown as IConversation
+
+			if (!data) throw new Error('Error fetching conversation')
+
+			const shareData = (await shareFunc('/create', {
+				method: 'POST',
+				headers: {
+					Authorization: window.__token__,
+					'content-type': 'application/json',
+				},
+				body: JSON.stringify({
+					conversation_id: conversationId,
+					current_node_id: data.current_node,
+					is_anonymous: true,
+				}),
+			})) as unknown as IConversationShareData
+
+			if (!shareData) throw new Error('Error sharing conversation')
+
+			return shareData
+		} catch (e) {
+			console.log(e)
+			return undefined
+		} finally {
+			setLoading(false)
 		}
 	}
 
@@ -138,6 +186,7 @@ const useFetchConversations = () => {
 		loading,
 		finished: state.finished,
 		deleteConversation,
+		shareConversation,
 	}
 }
 

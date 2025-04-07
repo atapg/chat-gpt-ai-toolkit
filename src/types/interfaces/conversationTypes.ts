@@ -23,3 +23,24 @@ export interface IConversationFetchResponse {
 	offset: number
 	total: number
 }
+
+export interface IModerationState {
+	has_been_moderated: boolean
+	has_been_blocked: boolean
+	has_been_accepted: boolean
+}
+
+export interface IConversationShareData {
+	already_exists: boolean
+	can_disable_discoverability: boolean
+	current_node_id: string
+	highlighted_message_id: string | null
+	is_anonymous: boolean
+	is_discoverable: boolean
+	is_public: boolean
+	is_visible: boolean
+	moderation_state: IModerationState
+	share_id: string
+	share_url: string
+	title: string
+}

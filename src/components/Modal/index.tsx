@@ -32,7 +32,7 @@ const Modal = ({
 							onClick={handleOverlayClick}
 						></div>
 						{loading ? (
-							<div className='p-6 center'>
+							<div className='modal-container p-6 center'>
 								<Spinner />
 							</div>
 						) : (

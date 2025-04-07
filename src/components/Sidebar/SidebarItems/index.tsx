@@ -110,6 +110,7 @@ const SidebarItems = ({
 			)}
 			{showShareModal ? (
 				<SidebarShareModal
+					conversation={conversation}
 					showModal={showShareModal}
 					toggleShowModal={toggleShowShareModal}
 				/>

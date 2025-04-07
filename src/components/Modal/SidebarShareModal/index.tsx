@@ -1,20 +1,46 @@
+import { useEffect, useState } from 'react'
 import Modal from '..'
+import useFetchConversations from '../../../hooks/useFetchConversations'
+import { IConversation } from '../../../types/interfaces/conversationTypes'
 
 const SidebarShareModal = ({
+	conversation,
 	showModal,
 	toggleShowModal,
 }: {
+	conversation: IConversation
 	showModal: boolean
 	toggleShowModal: (show?: boolean) => void
 }) => {
-	const handleLinkCopy = () => {}
+	const { loading, shareConversation } = useFetchConversations()
+	const [shareLink, setShareLink] = useState<string>('')
+
+	useEffect(() => {
+		shareConversation(conversation.id).then((res) => {
+			if (res) {
+				setShareLink(res.share_url)
+			}
+		})
+	}, [])
+
+	const handleLinkCopy = () => {
+		if (navigator.clipboard) {
+			navigator.clipboard.writeText(shareLink).catch((err) => {
+				console.error('Failed to copy: ', err)
+			})
+		}
+	}
 
 	return (
 		<Modal
 			show={showModal}
 			toggleShow={toggleShowModal}
-			title={<Modal.Title>Share public link to chat</Modal.Title>}
-			loading={false}
+			title={
+				<Modal.Title>
+					Share public link to chat <b>ADD CLOSE BUTTON</b>
+				</Modal.Title>
+			}
+			loading={loading}
 		>
 			<Modal.Content>
 				<div className='w-full'>
@@ -39,7 +65,7 @@ const SidebarShareModal = ({
 							readOnly={true}
 							className='bg-token-main-surface-primary w-full rounded-xl border-0 px-2 py-1 text-lg focus:ring-0 sm:py-2.5 text-token-text-tertiary'
 							type='text'
-							value='https://chatgpt.com/share/…'
+							value={shareLink}
 						/>
 						<div className='from-token-main-surface-primary pointer-events-none absolute top-0 right-0 bottom-0 w-12 bg-linear-to-l'></div>
 					</div>
