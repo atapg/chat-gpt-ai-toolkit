@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react'
 import { IFolder } from '../types/interfaces/folderTypes'
 import { defaultFolders } from '../config/default'
+import { useChromeStorage } from './useChromeStorage'
 
 export const useFolders = () => {
 	const [folders, setFolders] = useState<IFolder[]>([])
+	const { get, set } = useChromeStorage()
 
 	useEffect(() => {
-		chrome.storage.local.get(['folders'], (result) => {
-			if (result.folders) {
-				setFolders(result.folders)
+		get<IFolder[]>('folders').then((result) => {
+			if (result) {
+				setFolders(result)
 			} else {
-				chrome.storage.local.set({ folders: defaultFolders }, () => {
+				set('folders', defaultFolders).then(() => {
 					setFolders(defaultFolders)
 				})
 			}
