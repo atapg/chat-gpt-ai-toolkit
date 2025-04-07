@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ISidebar } from '../../types/interfaces/sidebarTypes'
 import './style.scss'
 import { useStorage } from '../../hooks/useStorage'
@@ -8,10 +8,11 @@ import useInfiniteScroll from '../../hooks/useInfiniteScroll'
 import useFetchConversations from '../../hooks/useFetchConversations'
 import useLocation from '../../hooks/useLocation'
 import ExtensionSidebar from '../ExtensionSidebar'
-import { useFolders } from '../../hooks/useFolders'
+import { useChromeStorage } from '../../hooks/useChromeStorage'
+import { FoldersProvider } from '../../context/FoldersContext'
 
 const Sidebar = (_: ISidebar) => {
-	const [activeTab, setActiveTab] = useState('original')
+	const [activeTab, setActiveTab] = useState('extension')
 	const { state } = useStorage()
 	const { fetchNextConversations, loading, finished } =
 		useFetchConversations()
@@ -22,11 +23,22 @@ const Sidebar = (_: ISidebar) => {
 		removeEvent: finished,
 	})
 	const location = useLocation()
-	const { folders } = useFolders()
+	const { getOrSet, set } = useChromeStorage()
 
 	const handleTabSwitch = (tab: string) => {
 		setActiveTab(tab)
+		set('lastTab', tab)
 	}
+
+	useEffect(() => {
+		getOrSet('lastTab', 'original').then((tab) => {
+			if (tab === 'extension') {
+				setActiveTab('extension')
+			} else {
+				setActiveTab('original')
+			}
+		})
+	}, [])
 
 	return (
 		<div id='sidebar-container'>
@@ -81,7 +93,9 @@ const Sidebar = (_: ISidebar) => {
 					activeTab === 'extension' ? 'tab-content' : 'display-none'
 				}`}
 			>
-				{folders ? <ExtensionSidebar folders={folders} /> : <Spinner />}
+				<FoldersProvider>
+					<ExtensionSidebar />
+				</FoldersProvider>
 			</div>
 		</div>
 	)

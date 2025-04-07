@@ -2,8 +2,8 @@ import { createRoot } from 'react-dom/client'
 
 import './styles/_globals.scss'
 import App from './App'
-import { initialStorage, storageReducer } from './store/StorageReducer'
-import { StorageProvider } from './store/StorageContext'
+import { initialStorage, storageReducer } from './reducers/StorageReducer'
+import { StorageProvider } from './context/StorageContext'
 import ErrorBoundary from './components/Error/ErrorBoundary'
 
 createRoot(document.getElementById('appRoot')!).render(

@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react'
 import ErrorBoundary from '../src/components/Error/ErrorBoundary'
-import { StorageProvider } from '../src/store/StorageContext'
-import { initialStorage, storageReducer } from '../src/store/StorageReducer'
+import { StorageProvider } from '../src/context/StorageContext'
+import { initialStorage, storageReducer } from '../src/reducers/StorageReducer'
 import App from '../src/App'
 
 describe('App Initialization', () => {

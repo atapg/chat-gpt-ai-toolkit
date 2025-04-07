@@ -16,8 +16,20 @@ export const useChromeStorage = () => {
 		})
 	}
 
+	const getOrSet = async <T>(key: string, defaultValue: T): Promise<T> => {
+		const value = await get<T>(key)
+
+		if (value === undefined) {
+			await set(key, defaultValue)
+			return defaultValue
+		}
+
+		return value
+	}
+
 	return {
 		get,
 		set,
+		getOrSet,
 	}
 }

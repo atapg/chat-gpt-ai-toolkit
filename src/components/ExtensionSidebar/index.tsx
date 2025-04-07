@@ -1,8 +1,10 @@
-import { IFolder } from '../../types/interfaces/folderTypes'
+import { useFolders } from '../../hooks/useFolders'
 import FolderItems from '../Folders/FolderItems'
 import './style.scss'
 
-const ExtensionSidebar = ({ folders }: { folders: IFolder[] }) => {
+const ExtensionSidebar = () => {
+	const { folders } = useFolders()
+
 	return (
 		<div className='folders-wrapper'>
 			<div className='folders-sidebar-container'>
