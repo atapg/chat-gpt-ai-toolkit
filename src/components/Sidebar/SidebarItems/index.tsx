@@ -8,15 +8,18 @@ import PencilIcon from '../../SvgIcons/PencilIcon'
 import { useState } from 'react'
 import SidebarDeleteModal from '../../Modal/SidebarDeleteModal'
 import SidebarShareModal from '../../Modal/SidebarShareModal'
+import { IFolderConversation } from '../../../types/interfaces/folderTypes'
 
 const SidebarItems = ({
 	conversation,
 	index,
 	active,
+	level = 0,
 }: {
-	conversation: IConversation
+	conversation: IConversation | IFolderConversation
 	index: number
 	active: boolean
+	level?: number
 }) => {
 	const { push } = useNavigation()
 	const [showModal, setShowModal] = useState<boolean>(false)
@@ -56,6 +59,7 @@ const SidebarItems = ({
 							style={{
 								maskImage: 'var(--sidebar-mask)',
 								width: '100%',
+								paddingLeft: `${level * 10}px`,
 							}}
 						>
 							{conversation.title}
@@ -101,7 +105,8 @@ const SidebarItems = ({
 			</li>
 			{showModal ? (
 				<SidebarDeleteModal
-					conversation={conversation}
+					conversationId={conversation.id}
+					conversationTitle={conversation.title}
 					showModal={showModal}
 					toggleShowModal={toggleShowModal}
 				/>
@@ -110,7 +115,7 @@ const SidebarItems = ({
 			)}
 			{showShareModal ? (
 				<SidebarShareModal
-					conversation={conversation}
+					conversationId={conversation.id}
 					showModal={showShareModal}
 					toggleShowModal={toggleShowShareModal}
 				/>

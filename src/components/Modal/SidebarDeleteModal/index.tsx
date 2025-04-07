@@ -1,14 +1,15 @@
 import Modal from '..'
 import useFetchConversations from '../../../hooks/useFetchConversations'
 import { useNavigation } from '../../../hooks/useNavigation'
-import { IConversation } from '../../../types/interfaces/conversationTypes'
 
 const SidebarDeleteModal = ({
-	conversation,
+	conversationId,
+	conversationTitle,
 	showModal,
 	toggleShowModal,
 }: {
-	conversation: IConversation
+	conversationId: string
+	conversationTitle: string
 	showModal: boolean
 	toggleShowModal: (show?: boolean) => void
 }) => {
@@ -23,7 +24,7 @@ const SidebarDeleteModal = ({
 		>
 			<Modal.Content>
 				<div className='grow overflow-y-auto'>
-					This will delete <strong>{conversation.title}</strong>.
+					This will delete <strong>{conversationTitle}</strong>.
 				</div>
 				<div className='text-token-text-tertiary mt-2 text-sm'>
 					To clear any memories from this chat, visit your{' '}
@@ -31,7 +32,7 @@ const SidebarDeleteModal = ({
 						onClick={() => {
 							toggleShowModal(false)
 							push(
-								`/c/${conversation.id}#settings/Personalization`
+								`/c/${conversationId}#settings/Personalization`
 							)
 						}}
 						className='underline cursor-pointer'
@@ -48,7 +49,7 @@ const SidebarDeleteModal = ({
 								className='btn relative btn-danger'
 								onClick={() => {
 									toggleShowModal(false)
-									deleteConversation(conversation.id)
+									deleteConversation(conversationId)
 								}}
 							>
 								<div className='flex items-center justify-center'>

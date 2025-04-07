@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react'
 import Modal from '..'
 import useFetchConversations from '../../../hooks/useFetchConversations'
-import { IConversation } from '../../../types/interfaces/conversationTypes'
 
 const SidebarShareModal = ({
-	conversation,
+	conversationId,
 	showModal,
 	toggleShowModal,
 }: {
-	conversation: IConversation
+	conversationId: string
 	showModal: boolean
 	toggleShowModal: (show?: boolean) => void
 }) => {
@@ -16,7 +15,7 @@ const SidebarShareModal = ({
 	const [shareLink, setShareLink] = useState<string>('')
 
 	useEffect(() => {
-		shareConversation(conversation.id).then((res) => {
+		shareConversation(conversationId).then((res) => {
 			if (res) {
 				setShareLink(res.share_url)
 			}

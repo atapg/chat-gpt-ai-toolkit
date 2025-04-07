@@ -1,0 +1,54 @@
+.folder-item-container {
+	display: flex;
+	align-items: start;
+	justify-content: center;
+	flex-direction: column;
+	width: 100%;
+	transform: 0.3s ease-in-out all;
+	user-select: none;
+
+	.folder-item-content {
+		display: flex;
+		align-items: center;
+		justify-content: start;
+		width: 100%;
+		padding-bottom: 7px;
+		padding-top: 7px;
+		transition: transform 0.1s ease-in-out;
+		border-radius: 8px;
+		background-color: var(--item-background-color);
+		height: 36px;
+		cursor: pointer;
+		transform: 0.3s ease-in-out all;
+		// mask-image: var(--sidebar-mask);
+
+		&:hover {
+			background-color: var(--sidebar-surface-secondary);
+		}
+	}
+
+	.folder-item-content.first-level {
+	}
+
+	.folder-item-title {
+		width: 100%;
+	}
+
+	.folder-item-subfolders {
+		display: flex;
+		align-items: start;
+		justify-content: center;
+		flex-direction: column;
+		width: 100%;
+		transform: 0.3s ease-in-out all;
+		display: none;
+	}
+
+	.folder-item-icon {
+		margin-right: 4px;
+	}
+}
+
+.open-folder {
+	display: flex !important;
+}

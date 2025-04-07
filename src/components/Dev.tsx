@@ -1,29 +1,59 @@
+import { IFolder } from '../types/interfaces/folderTypes'
+import ExtensionSidebar from './ExtensionSidebar'
+
 const Dev = () => {
-	// const conversation = {
-	// 	async_status: null,
-	// 	blocked_urls: [],
-	// 	conversation_origin: null,
-	// 	conversation_template_id: null,
-	// 	create_time: '2025-04-05T06:07:39.627990Z',
-	// 	current_node: null,
-	// 	gizmo_id: null,
-	// 	id: '67f0c8ab-60fc-800e-af2b-49c8933ca8c8',
-	// 	is_archived: false,
-	// 	is_do_not_remember: null,
-	// 	is_starred: null,
-	// 	mapping: null,
-	// 	safe_urls: [],
-	// 	snippet: null,
-	// 	title: 'JS vs TS',
-	// 	update_time: '2025-04-05T06:07:44.555284Z',
-	// 	workspace_id: null,
-	// }
+	const dummyData: IFolder[] = [
+		{
+			id: '5',
+			name: 'Second Main',
+			parentId: '1',
+			color: '#33c3ff',
+			conversations: [
+				{
+					id: '1231',
+					title: 'titleee',
+				},
+			],
+			subFolders: [
+				{
+					id: '5',
+					name: 'Second Main',
+					parentId: '1',
+					color: '#33c3ff',
+					conversations: [
+						{
+							id: '1231',
+							title: 'titleee',
+						},
+					],
+					subFolders: [],
+					createdAt: new Date('2025-04-06T10:15:00Z'),
+					updatedAt: new Date('2025-04-06T10:20:00Z'),
+				},
+			],
+			createdAt: new Date('2025-04-06T10:15:00Z'),
+			updatedAt: new Date('2025-04-06T10:20:00Z'),
+		},
+		{
+			id: '5',
+			name: 'Main Main',
+			parentId: '1',
+			color: '#33c3ff',
+			conversations: [
+				{
+					id: '1231',
+					title: 'titldsadsadsadsaeee',
+				},
+			],
+			subFolders: [],
+			createdAt: new Date('2025-04-06T10:15:00Z'),
+			updatedAt: new Date('2025-04-06T10:20:00Z'),
+		},
+	]
 
 	return (
 		<div>
-			{/* <Modal title={<Modal.Title>Delete</Modal.Title>}>
-				<Modal.Content>Content</Modal.Content>
-			</Modal> */}
+			<ExtensionSidebar folders={dummyData} />
 		</div>
 	)
 }
