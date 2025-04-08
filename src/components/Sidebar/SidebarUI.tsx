@@ -41,63 +41,67 @@ const Sidebar = (_: ISidebar) => {
 	}, [])
 
 	return (
-		<div id='sidebar-container'>
-			{/* Tabs */}
-			<div className='tabs'>
-				<button
-					className={`tab ${
-						activeTab === 'extension' ? 'active' : ''
-					}`}
-					onClick={() => handleTabSwitch('extension')}
-				>
-					Folders
-				</button>
-				<button
-					className={`tab ${
-						activeTab === 'original' ? 'active' : ''
-					}`}
-					onClick={() => handleTabSwitch('original')}
-				>
-					All
-				</button>
-			</div>
+		<FoldersProvider>
+			<div id='sidebar-container'>
+				{/* Tabs */}
+				<div className='tabs'>
+					<button
+						className={`tab ${
+							activeTab === 'extension' ? 'active' : ''
+						}`}
+						onClick={() => handleTabSwitch('extension')}
+					>
+						Folders
+					</button>
+					<button
+						className={`tab ${
+							activeTab === 'original' ? 'active' : ''
+						}`}
+						onClick={() => handleTabSwitch('original')}
+					>
+						All
+					</button>
+				</div>
 
-			{/* Tab content */}
-			<div
-				className={`all-chats ${
-					activeTab === 'original' ? 'tab-content' : 'display-none'
-				}`}
-			>
-				{state.conversations ? (
-					<ol>
-						{state.conversations.map((conversation, index) => (
-							<SidebarItems
-								key={conversation.id}
-								conversation={conversation}
-								index={index}
-								active={
-									location.pathname ===
-									`/c/${conversation.id}`
-								}
-							/>
-						))}
-					</ol>
-				) : (
-					<Spinner />
-				)}
-				{loading ? <Spinner /> : <></>}
-			</div>
+				{/* Tab content */}
+				<div
+					className={`all-chats ${
+						activeTab === 'original'
+							? 'tab-content'
+							: 'display-none'
+					}`}
+				>
+					{state.conversations.length ? (
+						<ol>
+							{state.conversations.map((conversation, index) => (
+								<SidebarItems
+									key={conversation.id}
+									conversation={conversation}
+									index={index}
+									active={
+										location.pathname ===
+										`/c/${conversation.id}`
+									}
+								/>
+							))}
+						</ol>
+					) : (
+						<Spinner />
+					)}
+					{loading ? <Spinner /> : <></>}
+				</div>
 
-			<div
-				className={`${
-					activeTab === 'extension' ? 'tab-content' : 'display-none'
-				}`}
-			>
-				<FoldersProvider>
+				<div
+					className={`${
+						activeTab === 'extension'
+							? 'tab-content'
+							: 'display-none'
+					}`}
+				>
 					<ExtensionSidebar />
-				</FoldersProvider>
+				</div>
 			</div>
-		</div>
+		</FoldersProvider>
 	)
 }
 

@@ -10,6 +10,7 @@ import SidebarDeleteModal from '../../Modal/SidebarDeleteModal'
 import SidebarShareModal from '../../Modal/SidebarShareModal'
 import { IFolderConversation } from '../../../types/interfaces/folderTypes'
 import MoveFolder from '../../SvgIcons/MoveFolder'
+import SidebarAddToFolderModal from '../../Modal/SidebarAddToFolderModal'
 
 const SidebarItems = ({
 	conversation,
@@ -25,23 +26,21 @@ const SidebarItems = ({
 	icon?: ReactNode
 }) => {
 	const { push } = useNavigation()
-	const [showModal, setShowModal] = useState<boolean>(false)
+	const [showDeleteModal, setshowDeleteModal] = useState<boolean>(false)
 	const [showShareModal, setShowShareModal] = useState<boolean>(false)
+	const [showMoveToFolderModal, setShowMoveToFolderModal] =
+		useState<boolean>(false)
 
-	const toggleShowModal = (show?: boolean) => {
-		if (show) {
-			setShowModal(show)
-		} else {
-			setShowModal((prevShow) => !prevShow)
-		}
+	const toggleAddToFolderModal = (show?: boolean) => {
+		setShowMoveToFolderModal((prevShow) => (show ? show : !prevShow))
+	}
+
+	const toggleshowDeleteModal = (show?: boolean) => {
+		setshowDeleteModal((prevShow) => (show ? show : !prevShow))
 	}
 
 	const toggleShowShareModal = (show?: boolean) => {
-		if (show) {
-			setShowShareModal(show)
-		} else {
-			setShowShareModal((prevShow) => !prevShow)
-		}
+		setShowShareModal((prevShow) => (show ? show : !prevShow))
 	}
 
 	return (
@@ -70,7 +69,6 @@ const SidebarItems = ({
 							</span>
 							{conversation.title}
 						</div>
-						{/* Add the 3-dots button */}
 						<DropDown
 							button={(toggleFunction: () => void) => (
 								<DropDown.Button
@@ -88,7 +86,7 @@ const SidebarItems = ({
 								Share
 							</DropDown.Item>
 							<DropDown.Item
-								onClick={() => {}}
+								onClick={() => toggleAddToFolderModal(true)}
 								icon={<MoveFolder />}
 							>
 								Move to Folder
@@ -97,7 +95,7 @@ const SidebarItems = ({
 								Rename
 							</DropDown.Item>
 							<DropDown.Item
-								onClick={() => toggleShowModal(true)}
+								onClick={() => toggleshowDeleteModal(true)}
 								style={{
 									color: 'var(--text-error)',
 								}}
@@ -115,12 +113,12 @@ const SidebarItems = ({
 					</div>
 				</div>
 			</li>
-			{showModal ? (
+			{showDeleteModal ? (
 				<SidebarDeleteModal
 					conversationId={conversation.id}
 					conversationTitle={conversation.title}
-					showModal={showModal}
-					toggleShowModal={toggleShowModal}
+					showModal={showDeleteModal}
+					toggleShowModal={toggleshowDeleteModal}
 				/>
 			) : (
 				<></>
@@ -130,6 +128,16 @@ const SidebarItems = ({
 					conversationId={conversation.id}
 					showModal={showShareModal}
 					toggleShowModal={toggleShowShareModal}
+				/>
+			) : (
+				<> </>
+			)}
+			{showMoveToFolderModal ? (
+				<SidebarAddToFolderModal
+					conversationId={conversation.id}
+					conversationTitle={conversation.title}
+					showModal={showMoveToFolderModal}
+					toggleShowModal={toggleAddToFolderModal}
 				/>
 			) : (
 				<> </>

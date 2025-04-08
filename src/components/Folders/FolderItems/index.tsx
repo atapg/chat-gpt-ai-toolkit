@@ -8,8 +8,21 @@ import DropDown from '../../ContextMenu/DropDown'
 import PencilIcon from '../../SvgIcons/PencilIcon'
 import DeleteIcon from '../../SvgIcons/DeleteIcon'
 import ChatIcon from '../../SvgIcons/ChatIcon'
+import MoveFolder from '../../SvgIcons/MoveFolder'
 
-const FolderItems = ({ folder, level }: { folder: IFolder; level: number }) => {
+const FolderItems = ({
+	folder,
+	level,
+	options = {
+		addBtn: false,
+	},
+}: {
+	folder: IFolder
+	level: number
+	options?: {
+		addBtn: boolean
+	}
+}) => {
 	const [isOpen, setIsOpen] = useState(false)
 
 	const handleToggle = () => {
@@ -55,6 +68,13 @@ const FolderItems = ({ folder, level }: { folder: IFolder; level: number }) => {
 							</DropDown.Button>
 						)}
 					>
+						{options.addBtn ? (
+							<DropDown.Item icon={<MoveFolder />}>
+								Move
+							</DropDown.Item>
+						) : (
+							<></>
+						)}
 						<DropDown.Item icon={<PencilIcon />}>
 							Rename
 						</DropDown.Item>

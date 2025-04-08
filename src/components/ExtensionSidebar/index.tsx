@@ -1,9 +1,9 @@
-import { useFolders } from '../../hooks/useFolders'
+import { useFolder } from '../../hooks/useFolder'
 import FolderItems from '../Folders/FolderItems'
 import './style.scss'
 
 const ExtensionSidebar = () => {
-	const { folders } = useFolders()
+	const { folders } = useFolder()
 
 	return (
 		<div className='folders-wrapper'>

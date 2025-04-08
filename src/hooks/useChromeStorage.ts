@@ -2,7 +2,6 @@ export const useChromeStorage = () => {
 	const get = <T>(key: string): Promise<T> => {
 		return new Promise<T>((resolve) => {
 			chrome.storage.local.get([key], (result) => {
-				console.log(result)
 				resolve(result[key])
 			})
 		})
