@@ -1,6 +1,7 @@
 import Modal from '..'
 import { useFolder } from '../../../hooks/useFolder'
 import FolderItems from '../../Folders/FolderItems'
+import MoveFolder from '../../SvgIcons/MoveFolderIcon'
 
 const SidebarAddToFolderModal = ({
 	conversationId,
@@ -13,9 +14,7 @@ const SidebarAddToFolderModal = ({
 	showModal: boolean
 	toggleShowModal: (show?: boolean) => void
 }) => {
-	const { folders } = useFolder()
-
-	console.log(folders)
+	const { folders, addConversationToFolder } = useFolder()
 
 	return (
 		<Modal
@@ -37,8 +36,23 @@ const SidebarAddToFolderModal = ({
 										key={index}
 										folder={folder}
 										level={1}
-										options={{ addBtn: true }}
-									/>
+									>
+										<FolderItems.Button
+											icon={<MoveFolder />}
+											onClick={() => {
+												addConversationToFolder(
+													{
+														folderId: folder.id,
+														id: conversationId,
+														title: conversationTitle,
+													},
+													folder.id
+												)
+											}}
+										>
+											Move
+										</FolderItems.Button>
+									</FolderItems>
 								))
 							) : (
 								<p>No folders available</p>

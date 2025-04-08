@@ -15,4 +15,14 @@ export interface IFolder {
 export interface IFolderConversation {
 	id: string
 	title: string
+	folderId: string
+}
+
+export interface IFoldersContextType {
+	folders: IFolder[]
+	setFolders: React.Dispatch<React.SetStateAction<IFolder[]>>
+	addConversationToFolder: (
+		conversation: IFolderConversation,
+		folderId: string
+	) => void
 }
