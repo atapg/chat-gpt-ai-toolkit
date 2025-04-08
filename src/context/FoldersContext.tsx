@@ -23,6 +23,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 			setFolders(foldersData)
 		})
 	}, [])
+
 	const updateFolderTree = (
 		folders: IFolder[],
 		folderId: string,

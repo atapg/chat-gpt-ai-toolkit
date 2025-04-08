@@ -64,26 +64,11 @@ const SidebarAddToFolderModal = ({
 					<div className='flex-0'>
 						<div className='flex flex-col gap-3 sm:flex-row-reverse mt-5 sm:mt-4'>
 							<button
-								className='btn relative btn-primary'
-								onClick={() => {
-									toggleShowModal(false)
-									// addToFolder({
-									// 	conversationId,
-									// 	conversationTitle,
-									// })
-									console.log(conversationId)
-								}}
-							>
-								<div className='flex items-center justify-center'>
-									Move
-								</div>
-							</button>
-							<button
 								className='btn relative btn-secondary'
 								onClick={() => toggleShowModal(false)}
 							>
 								<div className='flex items-center justify-center'>
-									Cancel
+									Close
 								</div>
 							</button>
 						</div>
