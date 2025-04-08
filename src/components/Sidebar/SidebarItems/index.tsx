@@ -9,6 +9,7 @@ import { ReactNode, useState } from 'react'
 import SidebarDeleteModal from '../../Modal/SidebarDeleteModal'
 import SidebarShareModal from '../../Modal/SidebarShareModal'
 import { IFolderConversation } from '../../../types/interfaces/folderTypes'
+import MoveFolder from '../../SvgIcons/MoveFolder'
 
 const SidebarItems = ({
 	conversation,
@@ -85,6 +86,12 @@ const SidebarItems = ({
 								icon={<ShareIcon />}
 							>
 								Share
+							</DropDown.Item>
+							<DropDown.Item
+								onClick={() => {}}
+								icon={<MoveFolder />}
+							>
+								Move to Folder
 							</DropDown.Item>
 							<DropDown.Item icon={<PencilIcon />}>
 								Rename
