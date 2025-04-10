@@ -4,7 +4,7 @@ export const defaultFolders: IFolder[] = [
 	{
 		id: '1',
 		name: 'Favorites',
-		parentId: '1',
+		parentId: null,
 		color: '#33c3ff',
 		conversations: [],
 		subFolders: [],
@@ -14,7 +14,7 @@ export const defaultFolders: IFolder[] = [
 	{
 		id: '2',
 		name: 'Archived',
-		parentId: '1',
+		parentId: null,
 		color: '#33c3ff',
 		conversations: [],
 		subFolders: [],

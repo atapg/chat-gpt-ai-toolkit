@@ -20,7 +20,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+      
+    /* Test */
+    "types": ["vitest"]
   },
   "include": ["src","src/types","tests"]
 }
