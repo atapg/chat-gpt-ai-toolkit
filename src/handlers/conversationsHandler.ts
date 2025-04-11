@@ -28,6 +28,5 @@ export const conversationsGetHandler = async (
 		})
 
 		window.dispatchEvent(headersEvent)
-		window.__token__ = headers['Authorization']
 	}
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const useLocation = () => {
+export const useLocation = () => {
 	const [location, setLocation] = useState({
 		pathname: window.location.pathname,
 		search: window.location.search,
@@ -39,5 +39,3 @@ const useLocation = () => {
 
 	return location
 }
-
-export default useLocation
