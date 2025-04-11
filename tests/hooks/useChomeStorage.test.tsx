@@ -13,9 +13,14 @@ global.chrome = {
 describe('useChromeStorage', () => {
 	it('should get value from chrome storage', async () => {
 		const mockGet = chrome.storage.local.get as vi.Mock
-		mockGet.mockImplementation((keys, callback) => {
-			callback({ 'some-key': 'stored-value' })
-		})
+		mockGet.mockImplementation(
+			(
+				_: string[],
+				callback: (items: Record<string, unknown>) => void
+			) => {
+				callback({ 'some-key': 'stored-value' })
+			}
+		)
 
 		const { result } = renderHook(() => useChromeStorage())
 		const value = await result.current.get('some-key')
@@ -26,9 +31,11 @@ describe('useChromeStorage', () => {
 
 	it('should set value in chrome storage', async () => {
 		const mockSet = chrome.storage.local.set as vi.Mock
-		mockSet.mockImplementation((items, callback) => {
-			callback()
-		})
+		mockSet.mockImplementation(
+			(_: Record<string, unknown>, callback: () => void) => {
+				callback()
+			}
+		)
 
 		const { result } = renderHook(() => useChromeStorage())
 		await act(async () => {

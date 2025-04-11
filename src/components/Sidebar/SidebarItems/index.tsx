@@ -51,7 +51,10 @@ const SidebarItems = ({
 				}`}
 				data-testid={`history-item-${index}`}
 			>
-				<div draggable='true' className='sidebar-item-content group'>
+				<div
+					draggable='true'
+					className='sidebar-item-content group sidebar-item-wrapper'
+				>
 					<div className='group-active-scale flex items-center'>
 						<div
 							onClick={() => push(`/c/${conversation.id}`)}

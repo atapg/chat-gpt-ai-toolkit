@@ -25,5 +25,5 @@
     /* Test */
     "types": ["vitest"]
   },
-  "include": ["src","src/types","tests"]
+  "include": ["src","src/types"],
 }
