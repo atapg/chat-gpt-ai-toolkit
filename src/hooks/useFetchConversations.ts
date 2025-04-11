@@ -8,12 +8,14 @@ import {
 	IConversationShareData,
 } from '../types/interfaces/conversationTypes'
 import { AddConversationsToStateEnum } from '../types/enums/conversationEnums'
+import { useHeader } from './useHeader'
 
 const MAX_CONVERSATIONS_LIMIT = appConfig.maxConversationFetchLimit
 
 const useFetchConversations = () => {
 	const [loading, setLoading] = useState<boolean>(false)
 	const { dispatch, state } = useStorage()
+	const { getToken } = useHeader()
 	const { func } = useFetch({
 		url: `${appConfig.chatGPTBaseUrl}/conversations?`,
 	})
@@ -42,7 +44,7 @@ const useFetchConversations = () => {
 				const queryParams = `offset=${offset}&limit=${limit}&order=updated`
 				const data = (await func(queryParams, {
 					headers: {
-						Authorization: token ? token : window.__token__,
+						Authorization: token ? token : await getToken(),
 					},
 				})) as unknown as IConversationFetchResponse
 
@@ -84,7 +86,7 @@ const useFetchConversations = () => {
 			const data = await conversationFunc(`/${conversationId}`, {
 				method: 'PATCH',
 				headers: {
-					Authorization: window.__token__,
+					Authorization: await getToken(),
 					'content-type': 'application/json',
 				},
 				body: JSON.stringify({
@@ -117,7 +119,7 @@ const useFetchConversations = () => {
 			const data = (await conversationFunc(`/${conversationId}`, {
 				method: 'GET',
 				headers: {
-					Authorization: window.__token__,
+					Authorization: await getToken(),
 					'content-type': 'application/json',
 				},
 			})) as unknown as IConversation
@@ -127,7 +129,7 @@ const useFetchConversations = () => {
 			const shareData = (await shareFunc('/create', {
 				method: 'POST',
 				headers: {
-					Authorization: window.__token__,
+					Authorization: await getToken(),
 					'content-type': 'application/json',
 				},
 				body: JSON.stringify({
