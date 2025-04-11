@@ -5,7 +5,7 @@ import {
 	IUseFetchResponse,
 } from '../types/interfaces/useFetchTypes'
 
-const useFetch = <T>({
+export const useFetch = <T>({
 	url,
 	defaultParams,
 	options,

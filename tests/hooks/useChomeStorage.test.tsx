@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import { useChromeStorage } from '../../src/hooks/useChromeStorage'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 global.chrome = {
 	storage: {

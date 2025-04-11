@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react'
 import { useNavigation } from '../../src/hooks/useNavigation'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 describe('useNavigation', () => {
 	it('should call pushState and dispatch popstate event', () => {
