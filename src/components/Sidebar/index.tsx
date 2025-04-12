@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 
 const SidebarWrapper = () => {
 	const [navElement] = usePortalTarget(
-		'nav > div:nth-child(2) > div:nth-child(1) > div:nth-child(3)',
+		'nav > div:nth-child(2) > div:nth-child(1) > div:nth-child(4)',
 		{
 			cleanElement: true,
 			exceptionElementId: 'sidebar-container',
@@ -13,7 +13,7 @@ const SidebarWrapper = () => {
 	) // Track <nav> element
 
 	const [navElementGPTSPath] = usePortalTarget(
-		'nav > div:nth-child(2) > div:nth-child(3)',
+		'nav > div:nth-child(2) > div:nth-child(4)',
 		{
 			cleanElement: true,
 			exceptionElementId: 'sidebar-container',

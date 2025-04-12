@@ -1,6 +1,11 @@
 import './style.scss'
 import { IFolder } from '../../../types/interfaces/folderTypes'
-import { ReactElement, ReactNode, useState } from 'react'
+import {
+	ComponentPropsWithoutRef,
+	ReactElement,
+	ReactNode,
+	useState,
+} from 'react'
 import ChevronBottom from '../../SvgIcons/ChevronBottom'
 import ChevronRight from '../../SvgIcons/ChevronRight'
 import SidebarItems from '../../Sidebar/SidebarItems'
@@ -8,6 +13,7 @@ import DropDown from '../../ContextMenu/DropDown'
 import PencilIcon from '../../SvgIcons/PencilIcon'
 import DeleteIcon from '../../SvgIcons/DeleteIcon'
 import ChatIcon from '../../SvgIcons/ChatIcon'
+import { useFolder } from '../../../hooks/useFolder'
 
 const FolderItems = ({
 	folder,
@@ -19,6 +25,7 @@ const FolderItems = ({
 	children?: ReactNode
 }) => {
 	const [isOpen, setIsOpen] = useState(false)
+	const { removeFolder } = useFolder()
 
 	const handleToggle = () => {
 		setIsOpen(!isOpen)
@@ -63,12 +70,12 @@ const FolderItems = ({
 							</DropDown.Button>
 						)}
 					>
-						{children}
 						<DropDown.Item icon={<PencilIcon />}>
 							Rename
 						</DropDown.Item>
+						{children}
 						<DropDown.Item
-							onClick={() => {}}
+							onClick={() => removeFolder(folder.id)}
 							style={{
 								color: 'var(--text-error)',
 							}}
@@ -137,7 +144,7 @@ FolderItems.Button = ({
 	children: ReactNode
 	icon: ReactElement
 	onClick: () => void
-}) => {
+} & ComponentPropsWithoutRef<'li'>) => {
 	return (
 		<DropDown.Item icon={icon} {...rest} onClick={onClick}>
 			{children}
