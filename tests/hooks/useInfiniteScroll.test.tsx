@@ -10,6 +10,7 @@ const TestComponent = () => {
 		func: mockFunc,
 		loading: false,
 		querySelector: '#scroll-container',
+		removeEvent: false,
 	})
 
 	return (
