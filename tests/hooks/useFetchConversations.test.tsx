@@ -21,19 +21,13 @@ describe('useFetchConversations', () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks()
-
-		// Mock useStorage
 		;(useStorage as any).mockReturnValue({
 			dispatch: mockDispatch,
 			state: { offset: 0, limit: 20, total: 40, finished: false },
 		})
-
-		// Mock useHeader
 		;(useHeader as any).mockReturnValue({
 			getToken: mockGetToken,
 		})
-
-		// Mock useFetch
 		;(useFetch as any).mockImplementation(({ url }: any) => {
 			if (url.includes('/conversations?')) {
 				return { func: vi.fn().mockResolvedValue(mockConversations) }

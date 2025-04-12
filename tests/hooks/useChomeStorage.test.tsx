@@ -53,7 +53,6 @@ describe('useChromeStorage', () => {
 		const mockGet = chrome.storage.local.get as vi.Mock
 		const mockSet = chrome.storage.local.set as vi.Mock
 
-		// Simulate that no value exists for the key
 		mockGet.mockImplementation((keys, callback) => {
 			callback({})
 		})
