@@ -67,7 +67,7 @@ const SidebarItems = ({
 								paddingLeft: `${level * 10}px`,
 							}}
 						>
-							<span style={{ marginRight: '4px' }}>
+							<span className='sidebar-item-icon center'>
 								{icon ? icon : <></>}
 							</span>
 							{conversation.title}

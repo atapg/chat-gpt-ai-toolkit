@@ -112,7 +112,7 @@ const FolderItems = ({
 								conversation={conversation}
 								active={false}
 								index={index}
-								level={level - 1}
+								level={level}
 								icon={
 									<ChatIcon
 										style={{

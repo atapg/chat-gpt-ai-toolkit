@@ -1,3 +1,5 @@
+@use '../../../styles/variables';
+
 .folder-item-container {
 	display: flex;
 	align-items: start;
@@ -76,7 +78,9 @@
 	}
 
 	.folder-item-icon {
-		margin-right: 4px;
+		margin-right: variables.$icon-right-margin;
+		width: variables.$icon-size;
+		height: variables.$icon-size;
 	}
 }
 
