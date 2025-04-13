@@ -18,6 +18,7 @@ export type StorageAction =
 	| { type: 'ADD_FINISHED'; value: any }
 	| { type: 'PREPEND_CONVERSATION'; value: any }
 	| { type: 'DELETE_CONVERSATION'; value: any }
+	| { type: 'CLEAR_CONVERSATION' }
 
 export interface IStorageContextType {
 	state: IStorageState

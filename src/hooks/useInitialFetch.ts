@@ -1,18 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import useFetchConversations from './useFetchConversations'
-import { AddConversationsToStateEnum } from '../types/enums/conversationEnums'
 import { useHeader } from './useHeader'
 
 const useInitialFetch = () => {
-	const { fetchConversations } = useFetchConversations()
-	const [token, setToken] = useState<string>('')
+	const { fetchConversations, clearConversations } = useFetchConversations()
 	const { setToken: setHeaderToken } = useHeader()
 
 	useEffect(() => {
 		const headersRecievedEvent = async (event: CustomEventInit<any>) => {
 			await setHeaderToken(event.detail)
 			fetchConversations(undefined, undefined, event.detail)
-			setToken(event.detail)
 		}
 
 		window.addEventListener('headersRecieved', headersRecievedEvent)
@@ -24,8 +21,8 @@ const useInitialFetch = () => {
 
 	useEffect(() => {
 		const newChatCreated = () => {
-			console.log('NEW chat event')
-			fetchConversations(1, 0, token, AddConversationsToStateEnum.PREPEND)
+			clearConversations()
+			fetchConversations()
 		}
 
 		window.addEventListener('newChatCreated', newChatCreated)

@@ -36,6 +36,15 @@ export const storageReducer = (
 				),
 			}
 
+		case 'CLEAR_CONVERSATION':
+			return {
+				conversations: [],
+				limit: 100,
+				offset: 0,
+				total: 0,
+				finished: false,
+			}
+
 		case 'ADD_META':
 			return {
 				...state,

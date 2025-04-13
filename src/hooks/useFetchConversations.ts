@@ -150,6 +150,18 @@ const useFetchConversations = () => {
 		}
 	}
 
+	const clearConversations = () => {
+		dispatch({ type: 'CLEAR_CONVERSATION' })
+		dispatch({
+			type: 'ADD_META',
+			value: {
+				offset: 0,
+				limit: 0,
+				total: 0,
+			},
+		})
+	}
+
 	const addToState = (
 		data: IConversationFetchResponse,
 		type: AddConversationsToStateEnum
@@ -189,6 +201,7 @@ const useFetchConversations = () => {
 		finished: state.finished,
 		deleteConversation,
 		shareConversation,
+		clearConversations,
 	}
 }
 
