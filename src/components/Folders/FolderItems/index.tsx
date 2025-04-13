@@ -58,7 +58,7 @@ const FolderItems = ({
 				</div>
 				<div className='group-active-scale folder-details-wrapper flex items-center'>
 					<div className='folder-item-title' onClick={handleToggle}>
-						{folder.name}
+						<span>{folder.name}</span>
 					</div>
 					<DropDown
 						button={(toggleFunction: () => void) => (
