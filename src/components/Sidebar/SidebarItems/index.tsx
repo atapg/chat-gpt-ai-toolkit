@@ -67,9 +67,13 @@ const SidebarItems = ({
 								paddingLeft: `${level * 10}px`,
 							}}
 						>
-							<span className='sidebar-item-icon center'>
-								{icon ? icon : <></>}
-							</span>
+							{icon ? (
+								<span className='sidebar-item-icon center'>
+									{icon}
+								</span>
+							) : (
+								<></>
+							)}
 							{conversation.title}
 						</div>
 						<DropDown
