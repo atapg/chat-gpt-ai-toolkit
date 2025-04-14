@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
 import {
+	IConversationInFolders,
 	IFolder,
 	IFolderConversation,
 	IFoldersContextType,
@@ -19,13 +20,20 @@ export const FoldersContext = createContext<IFoldersContextType>({
 
 export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 	const [folders, setFolders] = useState<IFolder[]>([])
+	const [conversationFolders, setConversationFolders] =
+		useState<IConversationInFolders>({})
 	const { getOrSet, set } = useChromeStorage()
 
 	useEffect(() => {
 		getOrSet('folders', defaultFolders).then((storedFolders) => {
-			const foldersData = storedFolders as IFolder[]
-			setFolders(foldersData)
+			setFolders(storedFolders)
 		})
+
+		getOrSet<IConversationInFolders>('conversationFolders', {}).then(
+			(chats: IConversationInFolders) => {
+				setConversationFolders(chats)
+			}
+		)
 	}, [])
 
 	const findFolder = (
@@ -47,6 +55,46 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		}
 
 		return null
+	}
+
+	const addConversationToConversationFolders = (
+		conversationId: string,
+		folderId: string
+	) => {
+		let folders: string[] = conversationFolders[conversationId]
+
+		if (!folders) {
+			folders = [folderId]
+		}
+
+		const updatedConversationFolders = {
+			...conversationFolders,
+			[conversationId]: folders,
+		}
+
+		setConversationFolders(updatedConversationFolders)
+		set('conversationFolders', updatedConversationFolders)
+	}
+
+	const removeConversationFromoConversationFolders = (
+		conversationId: string,
+		folderId: string
+	) => {
+		let folders: string[] = conversationFolders[conversationId]
+
+		if (!folders) {
+			folders = []
+		} else {
+			folders = folders.filter((fId) => fId !== folderId)
+		}
+
+		const updatedConversationFolders = {
+			...conversationFolders,
+			[conversationId]: folders,
+		}
+
+		setConversationFolders(updatedConversationFolders)
+		set('conversationFolders', updatedConversationFolders)
 	}
 
 	const updateFolderTree = (
@@ -94,6 +142,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 
 		set('folders', updatedFolders)
 
+		addConversationToConversationFolders(conversation.id, folderId)
 		// Make api request in the future
 	}
 
@@ -138,12 +187,44 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		})
 	}
 
-	const removeConversationFromFolder = (conversationId: string) => {
-		const updatedFolders = removeConversationFromTree(
+	const removeConversationFromFolderTree = (
+		folders: IFolder[],
+		conversationId: string,
+		folderId: string
+	) => {
+		return folders.map((folder) => {
+			if (folder.id === folderId) {
+				return {
+					...folder,
+					conversations: folder.conversations.filter(
+						(c) => c.id !== conversationId
+					),
+				}
+			} else {
+				removeConversationFromFolderTree(
+					folder.subFolders,
+					conversationId,
+					folderId
+				)
+
+				return folder
+			}
+		})
+	}
+
+	const removeConversationFromFolder = (
+		conversationId: string,
+		folderId: string
+	) => {
+		const updatedFolders = removeConversationFromFolderTree(
 			folders,
-			conversationId
+			conversationId,
+			folderId
 		)
 
+		removeConversationFromoConversationFolders(conversationId, folderId)
+
+		// console.log(folderId)
 		setFolders(updatedFolders)
 		set('folders', updatedFolders)
 
@@ -167,6 +248,11 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 
 		setFolders(updatedFolders)
 		set('folders', updatedFolders)
+
+		// toggleConversationInChatsInFolderStorage(
+		// 	conversation.id,
+		// 	targetFolderId
+		// )
 
 		// Future: Sync via API
 	}

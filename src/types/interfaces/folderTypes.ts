@@ -25,11 +25,18 @@ export interface IFoldersContextType {
 		conversation: IFolderConversation,
 		folderId: string
 	) => void
-	removeConversationFromFolder: (conversationId: string) => void
+	removeConversationFromFolder: (
+		conversationId: string,
+		folderId: string
+	) => void
 	removeFolder: (folderId: string) => void
 	moveConversationToFolder: (
 		conversation: IFolderConversation,
 		targetFolderId: string
 	) => void
 	isConversationInFolder(folderId: string, conversationId: string): boolean
+}
+
+export interface IConversationInFolders {
+	[key: string]: string[]
 }

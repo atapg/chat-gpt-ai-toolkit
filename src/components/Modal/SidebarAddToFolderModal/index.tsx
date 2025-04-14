@@ -1,8 +1,8 @@
 import Modal from '..'
 import { useFolder } from '../../../hooks/useFolder'
 import FolderItems from '../../Folders/FolderItems'
-import DeleteIcon from '../../SvgIcons/DeleteIcon'
 import MoveFolder from '../../SvgIcons/MoveFolderIcon'
+import RemoveIcon from '../../SvgIcons/RemoveIcon'
 
 const SidebarAddToFolderModal = ({
 	conversationId,
@@ -19,7 +19,6 @@ const SidebarAddToFolderModal = ({
 		folders,
 		addConversationToFolder,
 		removeConversationFromFolder,
-		moveConversationToFolder,
 		isConversationInFolder,
 	} = useFolder()
 
@@ -50,7 +49,7 @@ const SidebarAddToFolderModal = ({
 											conversationId
 										) ? (
 											<>
-												<FolderItems.Button
+												{/* <FolderItems.Button
 													icon={<MoveFolder />}
 													onClick={() => {
 														moveConversationToFolder(
@@ -65,7 +64,7 @@ const SidebarAddToFolderModal = ({
 													}}
 												>
 													Move Here
-												</FolderItems.Button>
+												</FolderItems.Button> */}
 
 												<FolderItems.Button
 													icon={<MoveFolder />}
@@ -97,7 +96,7 @@ const SidebarAddToFolderModal = ({
 													color: 'var(--text-error)',
 												}}
 												icon={
-													<DeleteIcon
+													<RemoveIcon
 														style={{
 															fill: 'var(--text-error)',
 														}}
@@ -105,7 +104,8 @@ const SidebarAddToFolderModal = ({
 												}
 												onClick={() => {
 													removeConversationFromFolder(
-														conversationId
+														conversationId,
+														folder.id
 													)
 												}}
 											>
