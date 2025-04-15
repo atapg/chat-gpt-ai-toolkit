@@ -14,6 +14,7 @@ import PencilIcon from '../../SvgIcons/PencilIcon'
 import DeleteIcon from '../../SvgIcons/DeleteIcon'
 import ChatIcon from '../../SvgIcons/ChatIcon'
 import { useFolder } from '../../../hooks/useFolder'
+import MoveFolder from '../../SvgIcons/MoveFolderIcon'
 
 const FolderItems = ({
 	folder,
@@ -25,7 +26,7 @@ const FolderItems = ({
 	children?: ReactNode
 }) => {
 	const [isOpen, setIsOpen] = useState(false)
-	const { removeFolder } = useFolder()
+	const { removeFolder, createFolder } = useFolder()
 
 	const handleToggle = () => {
 		setIsOpen(!isOpen)
@@ -70,6 +71,14 @@ const FolderItems = ({
 							</DropDown.Button>
 						)}
 					>
+						<DropDown.Item
+							icon={<MoveFolder />}
+							onClick={() => {
+								createFolder(undefined, folder.id)
+							}}
+						>
+							New Folder
+						</DropDown.Item>
 						<DropDown.Item icon={<PencilIcon />}>
 							Rename
 						</DropDown.Item>
@@ -127,10 +136,12 @@ const FolderItems = ({
 							/>
 						))}
 					</ol>
-				) : (
+				) : folder.subFolders.length <= 0 ? (
 					<div className='folder-item-no-conversations'>
 						No conversations in this folder
 					</div>
+				) : (
+					<></>
 				)}
 			</div>
 		</div>

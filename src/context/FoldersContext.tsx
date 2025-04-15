@@ -71,9 +71,14 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 
 			if (folder.parentId === parentFolderId) {
 				foldersList.push(folder)
-			} else {
-				findFoldersWithSameParent(parentFolderId, folder.subFolders)
 			}
+
+			const subMatches = findFoldersWithSameParent(
+				parentFolderId,
+				folder.subFolders
+			)
+
+			foldersList.push(...subMatches)
 		}
 
 		return foldersList
@@ -304,6 +309,31 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		return false
 	}
 
+	const addSubFolder = (
+		folders: IFolder[],
+		parentId: string,
+		newSubFolder: IFolder
+	): IFolder[] => {
+		return folders.map((folder) => {
+			if (folder.id === parentId) {
+				return {
+					...folder,
+					subFolders: [...folder.subFolders, newSubFolder],
+				}
+			} else if (folder.subFolders.length > 0) {
+				return {
+					...folder,
+					subFolders: addSubFolder(
+						folder.subFolders,
+						parentId,
+						newSubFolder
+					),
+				}
+			}
+			return folder
+		})
+	}
+
 	const createFolder = (name?: string, parentFolderId?: string) => {
 		const baseName = name || 'New Folder'
 
@@ -331,7 +361,13 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 			deletable: true,
 		}
 
-		const newFoldersList = [...folders, newFolder]
+		let newFoldersList: IFolder[] = []
+
+		if (!parentFolderId) {
+			newFoldersList = [...folders, newFolder]
+		} else {
+			newFoldersList = addSubFolder(folders, parentFolderId, newFolder)
+		}
 
 		setFolders(newFoldersList)
 		set('folders', newFoldersList)
