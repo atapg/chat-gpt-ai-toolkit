@@ -1,0 +1,19 @@
+.folder-bar-container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+
+	.search-input-container {
+		width: 100%;
+
+		.search-input {
+			padding: 4px;
+			padding-left: 7px;
+			width: 100%;
+			background-color: var(--bg-secondary);
+			border-radius: 15px;
+			font-size: 0.8rem;
+		}
+	}
+}

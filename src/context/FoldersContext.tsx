@@ -7,6 +7,7 @@ import {
 } from '../types/interfaces/folderTypes'
 import { useChromeStorage } from '../hooks/useChromeStorage'
 import { defaultFolders } from '../config/default'
+import { useHelpers } from '../hooks/useHelpers'
 
 export const FoldersContext = createContext<IFoldersContextType>({
 	folders: [],
@@ -16,6 +17,7 @@ export const FoldersContext = createContext<IFoldersContextType>({
 	removeFolder: () => {},
 	moveConversationToFolder: () => {},
 	isConversationInFolder: () => false,
+	createFolder: () => {},
 })
 
 export const FoldersProvider = ({ children }: { children: ReactNode }) => {
@@ -23,6 +25,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 	const [conversationFolders, setConversationFolders] =
 		useState<IConversationInFolders>({})
 	const { getOrSet, set } = useChromeStorage()
+	const { generateRandomColor, generateUUID } = useHelpers()
 
 	useEffect(() => {
 		getOrSet('folders', defaultFolders).then((storedFolders) => {
@@ -80,18 +83,22 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		conversationId: string,
 		folderId: string
 	) => {
-		let folders: string[] = conversationFolders[conversationId]
+		let folders: string[] = []
 
-		if (!folders) {
-			folders = []
-		} else {
-			folders = folders.filter((fId) => fId !== folderId)
+		if (conversationFolders[conversationId]) {
+			folders = conversationFolders[conversationId]
 		}
+
+		console.log(folders)
+
+		folders = folders.filter((fId) => fId !== folderId)
 
 		const updatedConversationFolders = {
 			...conversationFolders,
 			[conversationId]: folders,
 		}
+
+		console.log(updatedConversationFolders)
 
 		setConversationFolders(updatedConversationFolders)
 		set('conversationFolders', updatedConversationFolders)
@@ -138,11 +145,10 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 	) => {
 		const updatedFolders = updateFolderTree(folders, folderId, conversation)
 
-		setFolders(updatedFolders)
-
-		set('folders', updatedFolders)
-
 		addConversationToConversationFolders(conversation.id, folderId)
+
+		setFolders(updatedFolders)
+		set('folders', updatedFolders)
 		// Make api request in the future
 	}
 
@@ -279,6 +285,26 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		return false
 	}
 
+	const createFolder = (name?: string, parentFolderId?: string) => {
+		const newFolder: IFolder = {
+			name: name ? name : 'New Folder',
+			id: generateUUID(),
+			conversations: [],
+			parentId: parentFolderId ? parentFolderId : null,
+			subFolders: [],
+			color: generateRandomColor(),
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		}
+
+		// Check if the name already exists?
+
+		const newFoldersList = [...folders, newFolder]
+
+		setFolders(newFoldersList)
+		set('folders', newFoldersList)
+	}
+
 	return (
 		<FoldersContext.Provider
 			value={{
@@ -289,6 +315,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 				removeFolder,
 				moveConversationToFolder,
 				isConversationInFolder,
+				createFolder,
 			}}
 		>
 			{children}

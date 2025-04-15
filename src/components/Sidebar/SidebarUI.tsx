@@ -10,6 +10,7 @@ import { useLocation } from '../../hooks/useLocation'
 import ExtensionSidebar from '../ExtensionSidebar'
 import { useChromeStorage } from '../../hooks/useChromeStorage'
 import { FoldersProvider } from '../../context/FoldersContext'
+import FolderBar from '../Folders/FolderBar'
 
 const Sidebar = (_: ISidebar) => {
 	const [activeTab, setActiveTab] = useState('extension')
@@ -43,6 +44,7 @@ const Sidebar = (_: ISidebar) => {
 	return (
 		<FoldersProvider>
 			<div id='sidebar-container'>
+				<FolderBar />
 				{/* Tabs */}
 				<div className='tabs'>
 					<button
