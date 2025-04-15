@@ -96,7 +96,7 @@ const SidebarItems = ({
 								onClick={() => toggleAddToFolderModal(true)}
 								icon={<MoveFolder />}
 							>
-								Move
+								Manage Folder
 							</DropDown.Item>
 							<DropDown.Item icon={<PencilIcon />}>
 								Rename
