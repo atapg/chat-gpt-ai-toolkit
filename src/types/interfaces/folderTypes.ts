@@ -35,7 +35,7 @@ export interface IFoldersContextType {
 		conversation: IFolderConversation,
 		targetFolderId: string
 	) => void
-	isConversationInFolder(folderId: string, conversationId: string): boolean
+	isConversationInFolder(folder: IFolder, conversationId: string): boolean
 	createFolder: (name?: string, parentFolderId?: string) => void
 }
 

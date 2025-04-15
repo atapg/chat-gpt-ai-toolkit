@@ -221,7 +221,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		folders: IFolder[],
 		conversationId: string,
 		folderId: string
-	) => {
+	): IFolder[] => {
 		return folders.map((folder) => {
 			if (folder.id === folderId) {
 				return {
@@ -231,13 +231,14 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 					),
 				}
 			} else {
-				removeConversationFromFolderTree(
-					folder.subFolders,
-					conversationId,
-					folderId
-				)
-
-				return folder
+				return {
+					...folder,
+					subFolders: removeConversationFromFolderTree(
+						folder.subFolders,
+						conversationId,
+						folderId
+					),
+				}
 			}
 		})
 	}
@@ -288,24 +289,15 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 	}
 
 	const isConversationInFolder = (
-		folderId: string,
+		folder: IFolder,
 		conversationId: string
 	): boolean => {
-		for (const folder of folders) {
-			if (folder.id === folderId) {
-				return folder.conversations.some(
-					(convo) => convo.id === conversationId
-				)
-			}
+		for (let i = 0; i < folder.conversations.length; i++) {
+			const conversation = folder.conversations[i]
 
-			if (folder.subFolders.length > 0) {
-				const foundInSub = isConversationInFolder(
-					folderId,
-					conversationId
-				)
-				if (foundInSub) return true
-			}
+			if (conversation.id === conversationId) return true
 		}
+
 		return false
 	}
 

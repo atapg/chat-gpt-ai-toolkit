@@ -20,10 +20,12 @@ const FolderItems = ({
 	folder,
 	level,
 	children,
+	dropdownButtons,
 }: {
 	folder: IFolder
 	level: number
 	children?: ReactNode
+	dropdownButtons?: (f: IFolder) => ReactNode
 }) => {
 	const [isOpen, setIsOpen] = useState(false)
 	const { removeFolder, createFolder } = useFolder()
@@ -82,7 +84,7 @@ const FolderItems = ({
 						<DropDown.Item icon={<PencilIcon />}>
 							Rename
 						</DropDown.Item>
-						{children}
+						{dropdownButtons && dropdownButtons(folder)}
 						{folder.deletable ? (
 							<DropDown.Item
 								onClick={() => removeFolder(folder.id)}
@@ -115,7 +117,10 @@ const FolderItems = ({
 						key={subFolder.id}
 						folder={subFolder}
 						level={level + 1}
-					/>
+						dropdownButtons={dropdownButtons}
+					>
+						{children}
+					</FolderItems>
 				))}
 				{folder.conversations.length > 0 ? (
 					<ol>
@@ -137,8 +142,13 @@ const FolderItems = ({
 						))}
 					</ol>
 				) : folder.subFolders.length <= 0 ? (
-					<div className='folder-item-no-conversations'>
-						No conversations in this folder
+					<div
+						style={{
+							paddingLeft: `${level * 10 + 23.5}px`,
+						}}
+						className='folder-item-no-conversations'
+					>
+						The folder is empty
 					</div>
 				) : (
 					<></>

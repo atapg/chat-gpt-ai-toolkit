@@ -1,5 +1,6 @@
 import Modal from '..'
 import { useFolder } from '../../../hooks/useFolder'
+import { IFolder } from '../../../types/interfaces/folderTypes'
 import FolderItems from '../../Folders/FolderItems'
 import MoveFolder from '../../SvgIcons/MoveFolderIcon'
 import RemoveIcon from '../../SvgIcons/RemoveIcon'
@@ -42,14 +43,15 @@ const SidebarAddToFolderModal = ({
 										key={index}
 										folder={folder}
 										level={1}
-									>
-										{/* If conversation is not in the folder then show this */}
-										{!isConversationInFolder(
-											folder.id,
-											conversationId
-										) ? (
+										dropdownButtons={(f: IFolder) => (
 											<>
-												{/* <FolderItems.Button
+												{/* If conversation is not in the folder then show this */}
+												{!isConversationInFolder(
+													f,
+													conversationId
+												) ? (
+													<>
+														{/* <FolderItems.Button
 													icon={<MoveFolder />}
 													onClick={() => {
 														moveConversationToFolder(
@@ -66,55 +68,59 @@ const SidebarAddToFolderModal = ({
 													Move Here
 												</FolderItems.Button> */}
 
-												<FolderItems.Button
-													icon={<MoveFolder />}
-													onClick={() => {
-														addConversationToFolder(
-															{
-																folderId:
-																	folder.id,
-																id: conversationId,
-																title: conversationTitle,
-															},
-															folder.id
-														)
-													}}
-												>
-													Add Here
-												</FolderItems.Button>
-											</>
-										) : (
-											<></>
-										)}
-										{/* If conversation is in the folder, then show remove btn */}
-										{isConversationInFolder(
-											folder.id,
-											conversationId
-										) ? (
-											<FolderItems.Button
-												style={{
-													color: 'var(--text-error)',
-												}}
-												icon={
-													<RemoveIcon
+														<FolderItems.Button
+															icon={
+																<MoveFolder />
+															}
+															onClick={() => {
+																addConversationToFolder(
+																	{
+																		folderId:
+																			f.id,
+																		id: conversationId,
+																		title: conversationTitle,
+																	},
+																	f.id
+																)
+															}}
+														>
+															Add
+														</FolderItems.Button>
+													</>
+												) : (
+													<></>
+												)}
+												{/* If conversation is in the folder, then show remove btn */}
+												{isConversationInFolder(
+													f,
+													conversationId
+												) ? (
+													<FolderItems.Button
 														style={{
-															fill: 'var(--text-error)',
+															color: 'var(--text-error)',
 														}}
-													/>
-												}
-												onClick={() => {
-													removeConversationFromFolder(
-														conversationId,
-														folder.id
-													)
-												}}
-											>
-												Remove
-											</FolderItems.Button>
-										) : (
-											<></>
+														icon={
+															<RemoveIcon
+																style={{
+																	fill: 'var(--text-error)',
+																}}
+															/>
+														}
+														onClick={() => {
+															removeConversationFromFolder(
+																conversationId,
+																f.id
+															)
+														}}
+													>
+														Remove
+													</FolderItems.Button>
+												) : (
+													<></>
+												)}
+											</>
 										)}
-									</FolderItems>
+									/>
 								))
 							) : (
 								<p>No folders available</p>
