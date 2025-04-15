@@ -8,8 +8,9 @@ export const defaultFolders: IFolder[] = [
 		color: '#33c3ff',
 		conversations: [],
 		subFolders: [],
-		createdAt: new Date('2025-04-06T10:15:00Z'),
-		updatedAt: new Date('2025-04-06T10:20:00Z'),
+		createdAt: new Date().toISOString(),
+		updatedAt: new Date().toISOString(),
+		deletable: false,
 	},
 	{
 		id: '2',
@@ -18,7 +19,8 @@ export const defaultFolders: IFolder[] = [
 		color: '#33c3ff',
 		conversations: [],
 		subFolders: [],
-		createdAt: new Date('2025-04-06T10:15:00Z'),
-		updatedAt: new Date('2025-04-06T10:20:00Z'),
+		createdAt: new Date().toISOString(),
+		updatedAt: new Date().toISOString(),
+		deletable: false,
 	},
 ]

@@ -74,21 +74,25 @@ const FolderItems = ({
 							Rename
 						</DropDown.Item>
 						{children}
-						<DropDown.Item
-							onClick={() => removeFolder(folder.id)}
-							style={{
-								color: 'var(--text-error)',
-							}}
-							icon={
-								<DeleteIcon
-									style={{
-										fill: 'var(--text-error)',
-									}}
-								/>
-							}
-						>
-							Delete
-						</DropDown.Item>
+						{folder.deletable ? (
+							<DropDown.Item
+								onClick={() => removeFolder(folder.id)}
+								style={{
+									color: 'var(--text-error)',
+								}}
+								icon={
+									<DeleteIcon
+										style={{
+											fill: 'var(--text-error)',
+										}}
+									/>
+								}
+							>
+								Delete
+							</DropDown.Item>
+						) : (
+							<></>
+						)}
 					</DropDown>
 				</div>
 			</div>

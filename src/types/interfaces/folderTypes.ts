@@ -8,8 +8,9 @@ export interface IFolder {
 	conversations: IFolderConversation[]
 	subFolders: IFolder[]
 	icon?: ReactNode
-	createdAt: Date
-	updatedAt: Date
+	deletable: boolean
+	createdAt: string
+	updatedAt: string
 }
 
 export interface IFolderConversation {

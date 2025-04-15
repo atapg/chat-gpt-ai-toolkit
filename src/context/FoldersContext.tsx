@@ -60,6 +60,25 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		return null
 	}
 
+	const findFoldersWithSameParent = (
+		parentFolderId: string | null,
+		folders: IFolder[]
+	): IFolder[] => {
+		const foldersList: IFolder[] = []
+
+		for (let i = 0; i < folders.length; i++) {
+			const folder = folders[i]
+
+			if (folder.parentId === parentFolderId) {
+				foldersList.push(folder)
+			} else {
+				findFoldersWithSameParent(parentFolderId, folder.subFolders)
+			}
+		}
+
+		return foldersList
+	}
+
 	const addConversationToConversationFolders = (
 		conversationId: string,
 		folderId: string
@@ -120,7 +139,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 				return {
 					...folder,
 					conversations: [...folder.conversations, conversation],
-					updatedAt: new Date(), //TODO change date format
+					updatedAt: new Date().toISOString(),
 				}
 			}
 
@@ -286,18 +305,31 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 	}
 
 	const createFolder = (name?: string, parentFolderId?: string) => {
-		const newFolder: IFolder = {
-			name: name ? name : 'New Folder',
-			id: generateUUID(),
-			conversations: [],
-			parentId: parentFolderId ? parentFolderId : null,
-			subFolders: [],
-			color: generateRandomColor(),
-			createdAt: new Date(),
-			updatedAt: new Date(),
+		const baseName = name || 'New Folder'
+
+		const siblingFolders = findFoldersWithSameParent(
+			parentFolderId ? parentFolderId : null,
+			folders
+		)
+
+		let uniqueName = baseName
+		let counter = 1
+		while (siblingFolders.some((folder) => folder.name === uniqueName)) {
+			uniqueName = `${baseName} (${counter})`
+			counter++
 		}
 
-		// Check if the name already exists?
+		const newFolder: IFolder = {
+			name: uniqueName,
+			id: generateUUID(),
+			conversations: [],
+			parentId: parentFolderId || null,
+			subFolders: [],
+			color: generateRandomColor(),
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
+			deletable: true,
+		}
 
 		const newFoldersList = [...folders, newFolder]
 
