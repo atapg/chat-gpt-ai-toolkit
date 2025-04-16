@@ -29,4 +29,7 @@ import {
 		cleanupAppObserver()
 		cleanupModalObserver()
 	}, 20000)
+
+	// // Remove original conversations element
+	// document.getElementById('history')?.remove()
 })()
