@@ -19,7 +19,7 @@ export const FoldersContext = createContext<IFoldersContextType>({
 	moveConversationToFolder: () => {},
 	isConversationInFolder: () => false,
 	createFolder: () => {},
-	updateFolder: () => {},
+	updateFolder: () => null,
 })
 
 export const FoldersProvider = ({ children }: { children: ReactNode }) => {
@@ -353,6 +353,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString(),
 			deletable: true,
+			isNew: true,
 		}
 
 		let newFoldersList: IFolder[] = []
@@ -396,16 +397,48 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		})
 	}
 
-	const updateFolder = (folderId: string, data: IFolderUpdateData) => {
+	const updateFolder = (
+		folderId: string,
+		parentFolderId: string | null,
+		data: IFolderUpdateData
+	): IFolderUpdateData | null => {
 		if (Object.keys(data).length <= 0) {
 			console.error('Nothing to change')
-			return
+			return null
 		}
 
-		const updatedFolders = updateFolderTreeByEdit(folders, folderId, data)
+		const folderData = { ...data }
+
+		if (folderData?.name) {
+			const baseName = folderData.name || 'New Folder'
+
+			const siblingFolders = findFoldersWithSameParent(
+				parentFolderId ? parentFolderId : null,
+				folders
+			)
+
+			let uniqueName = baseName
+			let counter = 1
+			while (
+				siblingFolders.some((folder) => folder.name === uniqueName)
+			) {
+				uniqueName = `${baseName} (${counter})`
+				counter++
+			}
+
+			folderData.name = uniqueName
+		}
+
+		const updatedFolders = updateFolderTreeByEdit(
+			folders,
+			folderId,
+			folderData
+		)
 
 		setFolders(updatedFolders)
 		set('folders', updatedFolders)
+
+		return folderData
 	}
 
 	return (

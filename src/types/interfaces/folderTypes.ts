@@ -11,6 +11,7 @@ export interface IFolder {
 	deletable: boolean
 	createdAt: string
 	updatedAt: string
+	isNew?: boolean
 }
 
 export interface IFolderConversation {
@@ -23,6 +24,7 @@ export interface IFolderUpdateData {
 	name?: string
 	color?: string
 	icon?: ReactNode
+	isNew?: boolean
 }
 
 export interface IFoldersContextType {
@@ -43,7 +45,11 @@ export interface IFoldersContextType {
 	) => void
 	isConversationInFolder(folder: IFolder, conversationId: string): boolean
 	createFolder: (name?: string, parentFolderId?: string) => void
-	updateFolder: (folderId: string, data: IFolderUpdateData) => void
+	updateFolder: (
+		folderId: string,
+		parentFolderId: string | null,
+		data: IFolderUpdateData
+	) => IFolderUpdateData | null
 }
 
 export interface IConversationInFolders {

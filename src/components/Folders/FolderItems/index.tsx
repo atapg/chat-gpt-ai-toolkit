@@ -1,5 +1,8 @@
 import './style.scss'
-import { IFolder } from '../../../types/interfaces/folderTypes'
+import {
+	IFolder,
+	IFolderUpdateData,
+} from '../../../types/interfaces/folderTypes'
 import {
 	ComponentPropsWithoutRef,
 	ReactElement,
@@ -31,15 +34,15 @@ const FolderItems = ({
 	dropdownButtons?: (f: IFolder) => ReactNode
 }) => {
 	const [isOpen, setIsOpen] = useState(false)
-	const [isEditing, setIsEditing] = useState(true)
+	const [isEditing, setIsEditing] = useState(false)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const cachedFolderName = useRef<string>(folder.name)
 	const [folderName, setFolderName] = useState(folder.name ? folder.name : '')
 	const { removeFolder, createFolder, updateFolder } = useFolder()
 	const { removeWhiteSpaceFromString, debounce } = useHelpers()
 	const debouncedSave = useRef(
-		debounce((name: string) => {
-			saveFolderName(name)
+		debounce((data: IFolderUpdateData) => {
+			saveFolderName(data)
 		}, 500)
 	).current
 
@@ -72,13 +75,35 @@ const FolderItems = ({
 			if (!folderName) {
 				setFolderName(cachedFolderName.current)
 			} else {
-				debouncedSave(removeWhiteSpaceFromString(folderName))
+				debouncedSave({ name: removeWhiteSpaceFromString(folderName) })
 			}
 		}
 	}, [folderName])
 
-	const saveFolderName = (name: string) => {
-		updateFolder(folder.id, { name })
+	useEffect(() => {
+		if (folder?.isNew) {
+			setIsEditing(() => true)
+
+			inputRef.current?.focus()
+
+			updateFolder(folder.id, folder.parentId, {
+				isNew: false,
+			})
+		}
+	}, [])
+
+	useEffect(() => {
+		if (isEditing) {
+			inputRef.current?.focus()
+		}
+	}, [isEditing])
+
+	const saveFolderName = (data: IFolderUpdateData) => {
+		const result = updateFolder(folder.id, folder.parentId, data)
+
+		if (result && result.name) {
+			setFolderName(result.name)
+		}
 	}
 
 	return (
@@ -113,7 +138,6 @@ const FolderItems = ({
 								ref={inputRef}
 								value={folderName}
 								onChange={(e) => setFolderName(e.target.value)}
-								autoFocus
 							/>
 						) : (
 							<span onDoubleClick={() => setIsEditing(true)}>
