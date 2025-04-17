@@ -45,56 +45,27 @@ const SidebarAddToFolderModal = ({
 										level={1}
 										dropdownButtons={(f: IFolder) => (
 											<>
-												{/* If conversation is not in the folder then show this */}
 												{!isConversationInFolder(
 													f,
 													conversationId
 												) ? (
-													<>
-														{/* <FolderItems.Button
-													icon={<MoveFolder />}
-													onClick={() => {
-														moveConversationToFolder(
-															{
-																folderId:
-																	folder.id,
-																id: conversationId,
-																title: conversationTitle,
-															},
-															folder.id
-														)
-													}}
-												>
-													Move Here
-												</FolderItems.Button> */}
-
-														<FolderItems.Button
-															icon={
-																<MoveFolder />
-															}
-															onClick={() => {
-																addConversationToFolder(
-																	{
-																		folderId:
-																			f.id,
-																		id: conversationId,
-																		title: conversationTitle,
-																	},
-																	f.id
-																)
-															}}
-														>
-															Add
-														</FolderItems.Button>
-													</>
+													<FolderItems.Button
+														icon={<MoveFolder />}
+														onClick={() => {
+															addConversationToFolder(
+																{
+																	folderId:
+																		f.id,
+																	id: conversationId,
+																	title: conversationTitle,
+																},
+																f.id
+															)
+														}}
+													>
+														Add
+													</FolderItems.Button>
 												) : (
-													<></>
-												)}
-												{/* If conversation is in the folder, then show remove btn */}
-												{isConversationInFolder(
-													f,
-													conversationId
-												) ? (
 													<FolderItems.Button
 														style={{
 															color: 'var(--text-error)',
@@ -115,8 +86,6 @@ const SidebarAddToFolderModal = ({
 													>
 														Remove
 													</FolderItems.Button>
-												) : (
-													<></>
 												)}
 											</>
 										)}

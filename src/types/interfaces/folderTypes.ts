@@ -19,6 +19,12 @@ export interface IFolderConversation {
 	folderId: string
 }
 
+export interface IFolderUpdateData {
+	name?: string
+	color?: string
+	icon?: ReactNode
+}
+
 export interface IFoldersContextType {
 	folders: IFolder[]
 	setFolders: React.Dispatch<React.SetStateAction<IFolder[]>>
@@ -37,6 +43,7 @@ export interface IFoldersContextType {
 	) => void
 	isConversationInFolder(folder: IFolder, conversationId: string): boolean
 	createFolder: (name?: string, parentFolderId?: string) => void
+	updateFolder: (folderId: string, data: IFolderUpdateData) => void
 }
 
 export interface IConversationInFolders {

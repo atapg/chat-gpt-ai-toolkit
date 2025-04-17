@@ -4,6 +4,8 @@ import {
 	ComponentPropsWithoutRef,
 	ReactElement,
 	ReactNode,
+	useEffect,
+	useRef,
 	useState,
 } from 'react'
 import ChevronBottom from '../../SvgIcons/ChevronBottom'
@@ -15,6 +17,7 @@ import DeleteIcon from '../../SvgIcons/DeleteIcon'
 import ChatIcon from '../../SvgIcons/ChatIcon'
 import { useFolder } from '../../../hooks/useFolder'
 import MoveFolder from '../../SvgIcons/MoveFolderIcon'
+import { useHelpers } from '../../../hooks/useHelpers'
 
 const FolderItems = ({
 	folder,
@@ -28,10 +31,54 @@ const FolderItems = ({
 	dropdownButtons?: (f: IFolder) => ReactNode
 }) => {
 	const [isOpen, setIsOpen] = useState(false)
-	const { removeFolder, createFolder } = useFolder()
+	const [isEditing, setIsEditing] = useState(true)
+	const inputRef = useRef<HTMLInputElement>(null)
+	const cachedFolderName = useRef<string>(folder.name)
+	const [folderName, setFolderName] = useState(folder.name ? folder.name : '')
+	const { removeFolder, createFolder, updateFolder } = useFolder()
+	const { removeWhiteSpaceFromString, debounce } = useHelpers()
+	const debouncedSave = useRef(
+		debounce((name: string) => {
+			saveFolderName(name)
+		}, 500)
+	).current
 
 	const handleToggle = () => {
 		setIsOpen(!isOpen)
+	}
+
+	useEffect(() => {
+		function handleClickOutside(event: MouseEvent) {
+			if (
+				inputRef.current &&
+				!inputRef.current.contains(event.target as Node)
+			) {
+				setIsEditing(false)
+			}
+		}
+
+		document.addEventListener('mousedown', handleClickOutside)
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside)
+		}
+	}, [])
+
+	useEffect(() => {
+		if (
+			removeWhiteSpaceFromString(cachedFolderName.current, true) !==
+			removeWhiteSpaceFromString(folderName, true)
+		) {
+			if (!folderName) {
+				setFolderName(cachedFolderName.current)
+			} else {
+				debouncedSave(removeWhiteSpaceFromString(folderName))
+			}
+		}
+	}, [folderName])
+
+	const saveFolderName = (name: string) => {
+		updateFolder(folder.id, { name })
 	}
 
 	return (
@@ -61,7 +108,18 @@ const FolderItems = ({
 				</div>
 				<div className='group-active-scale folder-details-wrapper flex items-center'>
 					<div className='folder-item-title' onClick={handleToggle}>
-						<span>{folder.name}</span>
+						{isEditing ? (
+							<input
+								ref={inputRef}
+								value={folderName}
+								onChange={(e) => setFolderName(e.target.value)}
+								autoFocus
+							/>
+						) : (
+							<span onDoubleClick={() => setIsEditing(true)}>
+								{folderName}
+							</span>
+						)}
 					</div>
 					<DropDown
 						button={(toggleFunction: () => void) => (
@@ -81,9 +139,16 @@ const FolderItems = ({
 						>
 							New Folder
 						</DropDown.Item>
-						<DropDown.Item icon={<PencilIcon />}>
-							Rename
-						</DropDown.Item>
+						{folder.deletable ? (
+							<DropDown.Item
+								icon={<PencilIcon />}
+								onClick={() => setIsEditing(true)}
+							>
+								Rename
+							</DropDown.Item>
+						) : (
+							<></>
+						)}
 						{dropdownButtons && dropdownButtons(folder)}
 						{folder.deletable ? (
 							<DropDown.Item

@@ -65,6 +65,16 @@
 		align-items: center;
 		justify-content: flex-start;
 		mask-image: 'var(--sidebar-mask)';
+
+		input {
+			background-color: transparent;
+			border-color: transparent;
+			border-radius: 0;
+			border-width: 0;
+			font-size: inherit;
+			line-height: normal;
+			padding: 0;
+		}
 	}
 
 	.folder-item-subfolders {
@@ -86,4 +96,8 @@
 
 .open-folder {
 	display: flex !important;
+}
+
+.input-not-selectable {
+	pointer-events: none;
 }

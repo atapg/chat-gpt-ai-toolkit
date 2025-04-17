@@ -4,6 +4,7 @@ import {
 	IFolder,
 	IFolderConversation,
 	IFoldersContextType,
+	IFolderUpdateData,
 } from '../types/interfaces/folderTypes'
 import { useChromeStorage } from '../hooks/useChromeStorage'
 import { defaultFolders } from '../config/default'
@@ -18,6 +19,7 @@ export const FoldersContext = createContext<IFoldersContextType>({
 	moveConversationToFolder: () => {},
 	isConversationInFolder: () => false,
 	createFolder: () => {},
+	updateFolder: () => {},
 })
 
 export const FoldersProvider = ({ children }: { children: ReactNode }) => {
@@ -365,6 +367,47 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		set('folders', newFoldersList)
 	}
 
+	const updateFolderTreeByEdit = (
+		folders: IFolder[],
+		folderId: string,
+		data: IFolderUpdateData
+	): IFolder[] => {
+		return folders.map((folder) => {
+			if (folder.id === folderId) {
+				return {
+					...folder,
+					...data,
+					updatedAt: new Date().toISOString(),
+				}
+			}
+
+			if (folder.subFolders.length > 0) {
+				return {
+					...folder,
+					subFolders: updateFolderTreeByEdit(
+						folder.subFolders,
+						folderId,
+						data
+					),
+				}
+			}
+
+			return folder
+		})
+	}
+
+	const updateFolder = (folderId: string, data: IFolderUpdateData) => {
+		if (Object.keys(data).length <= 0) {
+			console.error('Nothing to change')
+			return
+		}
+
+		const updatedFolders = updateFolderTreeByEdit(folders, folderId, data)
+
+		setFolders(updatedFolders)
+		set('folders', updatedFolders)
+	}
+
 	return (
 		<FoldersContext.Provider
 			value={{
@@ -376,6 +419,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 				moveConversationToFolder,
 				isConversationInFolder,
 				createFolder,
+				updateFolder,
 			}}
 		>
 			{children}

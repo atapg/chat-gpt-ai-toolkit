@@ -79,8 +79,6 @@ const cleanElementChildren = (element: HTMLElement, exception?: string) => {
 			if (exception && child.id !== exception) {
 				child.remove()
 			}
-		} else {
-			child.remove()
 		}
 	})
 }
