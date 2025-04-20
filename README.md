@@ -12,7 +12,9 @@ A powerful and minimal Chrome extension to organize your ChatGPT conversations i
 -   💾 Auto-save your ChatGPT sessions for future use
 -   🌙 Sleek, modern UI (light & dark theme support)
 
-## 📸 Screenshots
+## 📸 Preview
+
+<img src="https://raw.githubusercontent.com/atapg/chat-gpt-ai-toolkit/refs/heads/main/public/assets/gif/preview.gif" width="100%" height="100%" />
 
 ## 🛠️ Installation
 
