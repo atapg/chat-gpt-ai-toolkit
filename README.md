@@ -28,7 +28,6 @@ A powerful and minimal Chrome extension to organize your ChatGPT conversations i
 
     ```bashe
     npm i && npm run build
-
     ```
 
 3. Open Chrome and go to `chrome://extensions/`
