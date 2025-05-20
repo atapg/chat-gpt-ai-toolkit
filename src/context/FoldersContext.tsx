@@ -9,6 +9,7 @@ import {
 import { useChromeStorage } from '../hooks/useChromeStorage'
 import { defaultFolders } from '../config/default'
 import { useHelpers } from '../hooks/useHelpers'
+import { db } from '../db'
 
 export const FoldersContext = createContext<IFoldersContextType>({
 	folders: [],
@@ -331,11 +332,13 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 	const createFolder = (name?: string, parentFolderId?: string) => {
 		const baseName = name || 'New Folder'
 
+		// Check in db
 		const siblingFolders = findFoldersWithSameParent(
 			parentFolderId ? parentFolderId : null,
 			folders
 		)
 
+		// Check for same name in db
 		let uniqueName = baseName
 		let counter = 1
 		while (siblingFolders.some((folder) => folder.name === uniqueName)) {
@@ -363,6 +366,9 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		} else {
 			newFoldersList = addSubFolder(folders, parentFolderId, newFolder)
 		}
+
+		// Add folder to db
+		db.folders.add(newFolder)
 
 		setFolders(newFoldersList)
 		set('folders', newFoldersList)
