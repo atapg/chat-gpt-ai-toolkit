@@ -40,7 +40,40 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 				setConversationFolders(chats)
 			}
 		)
+
+		getNestedFolders().then((storedFolders) => {
+			console.log(storedFolders)
+		})
 	}, [])
+
+	function buildFolderTree(folders: IFolder[]): IFolder[] {
+		const folderMap: { [id: string]: IFolder } = {}
+
+		for (const folder of folders) {
+			folder.subFolders = []
+			folderMap[folder.id] = folder
+		}
+
+		const rootFolders: IFolder[] = []
+
+		for (const folder of folders) {
+			if (folder.parentId) {
+				const parent = folderMap[folder.parentId]
+				if (parent) {
+					parent.subFolders.push(folder)
+				}
+			} else {
+				rootFolders.push(folder)
+			}
+		}
+
+		return rootFolders
+	}
+
+	const getNestedFolders = async (): Promise<IFolder[]> => {
+		const allFolders = await db.folders.toArray()
+		return buildFolderTree(allFolders)
+	}
 
 	const findFolder = (
 		folderId: string,
