@@ -201,7 +201,7 @@ const FolderItems = ({
 					isOpen ? 'open-folder' : ''
 				}`}
 			>
-				{folder.subFolders.map((subFolder) => (
+				{folder.subFolders!.map((subFolder) => (
 					<FolderItems
 						key={subFolder.id}
 						folder={subFolder}
@@ -230,7 +230,7 @@ const FolderItems = ({
 							/>
 						))}
 					</ol>
-				) : folder.subFolders.length <= 0 ? (
+				) : folder.subFolders!.length <= 0 ? (
 					<div
 						style={{
 							paddingLeft: `${level * 10 + 23.5}px`,

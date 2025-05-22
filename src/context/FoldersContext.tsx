@@ -7,7 +7,6 @@ import {
 	IFolderUpdateData,
 } from '../types/interfaces/folderTypes'
 import { useChromeStorage } from '../hooks/useChromeStorage'
-import { defaultFolders } from '../config/default'
 import { useHelpers } from '../hooks/useHelpers'
 import { db } from '../db'
 
@@ -27,23 +26,15 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 	const [folders, setFolders] = useState<IFolder[]>([])
 	const [conversationFolders, setConversationFolders] =
 		useState<IConversationInFolders>({})
-	const { getOrSet, set } = useChromeStorage()
+	const { set } = useChromeStorage()
 	const { generateRandomColor, generateUUID } = useHelpers()
 
 	useEffect(() => {
-		getOrSet('folders', defaultFolders).then((storedFolders) => {
-			setFolders(storedFolders)
-		})
+		// getOrSet('folders', defaultFolders).then((storedFolders) => {
+		// 	setFolders(storedFolders)
+		// })
 
-		getOrSet<IConversationInFolders>('conversationFolders', {}).then(
-			(chats: IConversationInFolders) => {
-				setConversationFolders(chats)
-			}
-		)
-
-		getNestedFolders().then((storedFolders) => {
-			console.log(storedFolders)
-		})
+		updateFolderState()
 	}, [])
 
 	function buildFolderTree(folders: IFolder[]): IFolder[] {
@@ -60,7 +51,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 			if (folder.parentId) {
 				const parent = folderMap[folder.parentId]
 				if (parent) {
-					parent.subFolders.push(folder)
+					parent.subFolders!.push(folder)
 				}
 			} else {
 				rootFolders.push(folder)
@@ -75,6 +66,12 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		return buildFolderTree(allFolders)
 	}
 
+	const updateFolderState = async () => {
+		getNestedFolders().then((storedFolders) => {
+			setFolders(storedFolders)
+		})
+	}
+
 	const findFolder = (
 		folderId: string,
 		folders: IFolder[]
@@ -86,7 +83,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 				return folder
 			}
 
-			const found = findFolder(folderId, folder.subFolders)
+			const found = findFolder(folderId, folder.subFolders!)
 
 			if (found) {
 				return found
@@ -111,32 +108,13 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 
 			const subMatches = findFoldersWithSameParent(
 				parentFolderId,
-				folder.subFolders
+				folder.subFolders!
 			)
 
 			foldersList.push(...subMatches)
 		}
 
 		return foldersList
-	}
-
-	const addConversationToConversationFolders = (
-		conversationId: string,
-		folderId: string
-	) => {
-		let folders: string[] = conversationFolders[conversationId]
-
-		if (!folders) {
-			folders = [folderId]
-		}
-
-		const updatedConversationFolders = {
-			...conversationFolders,
-			[conversationId]: folders,
-		}
-
-		setConversationFolders(updatedConversationFolders)
-		set('conversationFolders', updatedConversationFolders)
 	}
 
 	const removeConversationFromoConversationFolders = (
@@ -184,11 +162,11 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 				}
 			}
 
-			if (folder.subFolders.length > 0) {
+			if (folder.subFolders!.length > 0) {
 				return {
 					...folder,
 					subFolders: updateFolderTree(
-						folder.subFolders,
+						folder.subFolders!,
 						folderId,
 						conversation
 					),
@@ -199,17 +177,39 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		})
 	}
 
-	const addConversationToFolder = (
+	const addConversationToFolder = async (
 		conversation: IFolderConversation,
 		folderId: string
 	) => {
-		const updatedFolders = updateFolderTree(folders, folderId, conversation)
+		const folder = await db.folders.get(folderId)
 
-		addConversationToConversationFolders(conversation.id, folderId)
+		if (folder) {
+			const updateData = {
+				conversations: [...folder.conversations, conversation],
+				updatedAt: new Date().toISOString(),
+			}
 
-		setFolders(updatedFolders)
-		set('folders', updatedFolders)
-		// Make api request in the future
+			await db.folders.update(folderId, updateData)
+		}
+	}
+
+	const collectDescendantFolderIds = (
+		folders: IFolder[],
+		targetId: string
+	): string[] => {
+		const idSet = new Set<string>()
+
+		function traverse(currentId: string) {
+			idSet.add(currentId)
+			for (const folder of folders) {
+				if (folder.parentId === currentId) {
+					traverse(folder.id)
+				}
+			}
+		}
+
+		traverse(targetId)
+		return Array.from(idSet)
 	}
 
 	const removeFolderFromTree = (
@@ -219,16 +219,20 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		return folders
 			.map((folder) => ({
 				...folder,
-				subFolders: removeFolderFromTree(folder.subFolders, folderId),
+				subFolders: removeFolderFromTree(folder.subFolders!, folderId),
 			}))
 			.filter((folder) => folder.id !== folderId)
 	}
 
-	const removeFolder = (folderId: string) => {
-		const updatedFolders = removeFolderFromTree(folders, folderId)
+	const removeFolder = async (folderId: string) => {
+		const allFolders = await db.folders.toArray()
+		const idsToDelete = collectDescendantFolderIds(allFolders, folderId)
+		await db.folders.bulkDelete(idsToDelete)
+		updateFolderState()
+		// const updatedFolders = removeFolderFromTree(folders, folderId)
 
-		setFolders(updatedFolders)
-		set('folders', updatedFolders)
+		// setFolders(updatedFolders)
+		// set('folders', updatedFolders)
 	}
 
 	const removeConversationFromTree = (
@@ -241,7 +245,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 			)
 
 			const updatedSubFolders = removeConversationFromTree(
-				folder.subFolders,
+				folder.subFolders!,
 				conversationId
 			)
 
@@ -270,7 +274,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 				return {
 					...folder,
 					subFolders: removeConversationFromFolderTree(
-						folder.subFolders,
+						folder.subFolders!,
 						conversationId,
 						folderId
 					),
@@ -346,13 +350,13 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 			if (folder.id === parentId) {
 				return {
 					...folder,
-					subFolders: [...folder.subFolders, newSubFolder],
+					subFolders: [...folder.subFolders!, newSubFolder],
 				}
-			} else if (folder.subFolders.length > 0) {
+			} else if (folder.subFolders!.length > 0) {
 				return {
 					...folder,
 					subFolders: addSubFolder(
-						folder.subFolders,
+						folder.subFolders!,
 						parentId,
 						newSubFolder
 					),
@@ -421,11 +425,11 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 				}
 			}
 
-			if (folder.subFolders.length > 0) {
+			if (folder.subFolders!.length > 0) {
 				return {
 					...folder,
 					subFolders: updateFolderTreeByEdit(
-						folder.subFolders,
+						folder.subFolders!,
 						folderId,
 						data
 					),

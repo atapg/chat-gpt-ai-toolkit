@@ -6,7 +6,7 @@ export interface IFolder {
 	parentId: string | null
 	color?: string
 	conversations: IFolderConversation[]
-	subFolders: IFolder[]
+	subFolders?: IFolder[]
 	icon?: ReactNode
 	deletable: boolean
 	createdAt: string

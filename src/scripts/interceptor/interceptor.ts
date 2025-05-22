@@ -7,4 +7,12 @@
 
 	const head = document.head || document.documentElement
 	head.prepend(newScriptElement)
+
+	const messageListener = async (message: any) => {
+		if (message.type === 'HEADERS_RECEIVED') {
+			console.log(message)
+		}
+	}
+
+	chrome.runtime.onMessage.addListener(messageListener)
 })()

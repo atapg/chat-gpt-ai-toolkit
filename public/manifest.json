@@ -8,7 +8,8 @@
 		"unlimitedStorage",
 		"scripting",
 		"activeTab",
-		"cookies"
+		"cookies",
+		"webRequest"
 	],
 	"host_permissions": ["https://chatgpt.com/*"],
 	"action": {

@@ -2,7 +2,7 @@ import Dexie, { Table } from 'dexie'
 import { IFolder } from './types/interfaces/folderTypes'
 
 class ChatGPTDB extends Dexie {
-	folders!: Table<IFolder, number>
+	folders!: Table<Omit<IFolder, 'subFolders'>, string>
 
 	constructor() {
 		super('ChatGPTDB')
@@ -10,7 +10,7 @@ class ChatGPTDB extends Dexie {
 		// Define the database schema
 		this.version(1).stores({
 			folders:
-				'id, name, parentId, color, conversations, subFolders, icon, deletable, createdAt, updatedAt, isNew',
+				'id, name, parentId, color, conversations, icon, deletable, createdAt, updatedAt, isNew',
 		})
 	}
 }
