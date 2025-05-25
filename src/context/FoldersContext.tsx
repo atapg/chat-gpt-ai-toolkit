@@ -59,24 +59,24 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 
 	// Get all folders from the database and build a tree structure
 	const getNestedFolders = async (): Promise<IFolder[]> => {
-		const allFolders = await db.folders.toArray()
+		const allFolders = await db.folders.orderBy('name').toArray()
 		return buildFolderTree(allFolders)
 	}
 
 	// Update the folder state in the context
-	const updateFolderState = async () => {
+	const updateFolderState = () => {
 		getNestedFolders().then((storedFolders) => {
-			setFolders(storedFolders)
+			setFolders(() => storedFolders)
 		})
 	}
 
 	// Find folders with the same name in the same parent folder
 	// This function will append a number to the name if a folder with the same name already exists
 	const findFoldersWithSameName = async (
-		folderName: string,
-		parentFolderId: string | null
+		parentFolderId: string | null,
+		folderName?: string
 	) => {
-		let uniqueName = folderName
+		let uniqueName = folderName ? folderName : 'New Folder'
 
 		const siblingFolders = parentFolderId
 			? await db.folders
@@ -89,7 +89,9 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 
 		let counter = 1
 		while (siblingFolders.some((folder) => folder.name === uniqueName)) {
-			uniqueName = `${folderName} (${counter})`
+			uniqueName = `${
+				folderName ? folderName : 'New Folder'
+			} (${counter})`
 			counter++
 		}
 
@@ -100,8 +102,8 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 	const createFolder = async (name?: string, parentFolderId?: string) => {
 		// Check for same name in root
 		const uniqueName = await findFoldersWithSameName(
-			name || 'New Folder',
-			parentFolderId ?? null
+			parentFolderId ?? null,
+			name
 		)
 
 		const newFolder: IFolder = {
@@ -117,7 +119,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 			isNew: false,
 		}
 
-		db.folders.add(newFolder)
+		await db.folders.add(newFolder)
 
 		// Add folder to db
 		updateFolderState()
@@ -139,8 +141,8 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		if (folderData?.name) {
 			// Check for same name in root
 			const uniqueName = await findFoldersWithSameName(
-				folderData.name || 'New Folder',
-				parentFolderId ?? null
+				parentFolderId ?? null,
+				folderData.name
 			)
 
 			folderData.name = uniqueName
