@@ -8,15 +8,14 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 		) {
 			details.requestHeaders?.forEach((header) => {
 				if (header.name === 'Authorization') {
-					chrome.runtime.sendMessage({
-						type: 'HEADERS_RECIEVED',
-						data: header.value,
+					chrome.storage.local.set({
+						authorizationHeader: header.value,
 					})
 				}
 			})
 		}
 
-		return {} // Required for Chrome manifest v3, no modifications
+		return { requestHeaders: details.requestHeaders }
 	},
 	{
 		urls: ['https://chatgpt.com/*'], // Filter the URLs you want to listen to
