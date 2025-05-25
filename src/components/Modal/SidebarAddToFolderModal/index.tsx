@@ -63,7 +63,7 @@ const SidebarAddToFolderModal = ({
 															)
 														}}
 													>
-														Add
+														Add To Folder
 													</FolderItems.Button>
 												) : (
 													<FolderItems.Button
@@ -84,7 +84,7 @@ const SidebarAddToFolderModal = ({
 															)
 														}}
 													>
-														Remove
+														Remove From Folder
 													</FolderItems.Button>
 												)}
 											</>

@@ -47,9 +47,15 @@ const SidebarDeleteModal = ({
 						<div className='flex flex-col gap-3 sm:flex-row-reverse mt-5 sm:mt-4'>
 							<button
 								className='btn relative btn-danger'
-								onClick={() => {
+								onClick={async () => {
 									toggleShowModal(false)
-									deleteConversation(conversationId)
+									try {
+										await deleteConversation(conversationId)
+										// removeConversationFromFolder(
+										// 	conversationId,
+										// 	f.id
+										// )
+									} catch (_) {}
 								}}
 							>
 								<div className='flex items-center justify-center'>
