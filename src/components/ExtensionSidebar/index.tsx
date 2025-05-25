@@ -9,11 +9,17 @@ const ExtensionSidebar = () => {
 		<div className='folders-wrapper'>
 			<div className='folders-sidebar-container'>
 				{folders.length > 0 ? (
-					folders.map((folder, index) => (
-						<FolderItems key={index} folder={folder} level={1} />
+					folders.map((folder) => (
+						<FolderItems
+							key={folder.id}
+							folder={folder}
+							level={1}
+						/>
 					))
 				) : (
-					<p>No folders available</p>
+					<p className='folder-item-no-conversations'>
+						No folders available
+					</p>
 				)}
 			</div>
 		</div>

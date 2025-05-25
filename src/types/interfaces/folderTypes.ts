@@ -50,6 +50,7 @@ export interface IFoldersContextType {
 		parentFolderId: string | null,
 		data: IFolderUpdateData
 	) => Promise<IFolderUpdateData | null>
+	getFolders: () => Promise<IFolder[] | []>
 }
 
 export interface IConversationInFolders {

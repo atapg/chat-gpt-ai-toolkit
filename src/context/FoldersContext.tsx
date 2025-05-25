@@ -18,6 +18,7 @@ export const FoldersContext = createContext<IFoldersContextType>({
 	isConversationInFolder: () => false,
 	createFolder: () => {},
 	updateFolder: async () => null,
+	getFolders: async () => [],
 })
 
 export const FoldersProvider = ({ children }: { children: ReactNode }) => {
@@ -98,6 +99,10 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		return uniqueName
 	}
 
+	const getFolders = async (): Promise<IFolder[] | []> => {
+		return await getNestedFolders()
+	}
+
 	// Create a new folder
 	const createFolder = async (name?: string, parentFolderId?: string) => {
 		// Check for same name in root
@@ -116,7 +121,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString(),
 			deletable: true,
-			isNew: false,
+			isNew: true,
 		}
 
 		await db.folders.add(newFolder)
@@ -258,6 +263,7 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 				isConversationInFolder,
 				createFolder,
 				updateFolder,
+				getFolders,
 			}}
 		>
 			{children}
