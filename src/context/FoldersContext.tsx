@@ -1,12 +1,10 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
 import {
-	IConversationInFolders,
 	IFolder,
 	IFolderConversation,
 	IFoldersContextType,
 	IFolderUpdateData,
 } from '../types/interfaces/folderTypes'
-import { useChromeStorage } from '../hooks/useChromeStorage'
 import { useHelpers } from '../hooks/useHelpers'
 import { db } from '../db'
 
@@ -19,14 +17,11 @@ export const FoldersContext = createContext<IFoldersContextType>({
 	moveConversationToFolder: () => {},
 	isConversationInFolder: () => false,
 	createFolder: () => {},
-	updateFolder: () => null,
+	updateFolder: async () => null,
 })
 
 export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 	const [folders, setFolders] = useState<IFolder[]>([])
-	const [conversationFolders, setConversationFolders] =
-		useState<IConversationInFolders>({})
-	const { set } = useChromeStorage()
 	const { generateRandomColor, generateUUID } = useHelpers()
 
 	useEffect(() => {
@@ -37,11 +32,12 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		updateFolderState()
 	}, [])
 
+	// Build a tree structure from the flat array of folders
+	// This function assumes that each folder has a unique id and a parentId
 	function buildFolderTree(folders: IFolder[]): IFolder[] {
 		const folderMap: { [id: string]: IFolder } = {}
 
 		for (const folder of folders) {
-			folder.subFolders = []
 			folderMap[folder.id] = folder
 		}
 
@@ -61,122 +57,134 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		return rootFolders
 	}
 
+	// Get all folders from the database and build a tree structure
 	const getNestedFolders = async (): Promise<IFolder[]> => {
 		const allFolders = await db.folders.toArray()
 		return buildFolderTree(allFolders)
 	}
 
+	// Update the folder state in the context
 	const updateFolderState = async () => {
 		getNestedFolders().then((storedFolders) => {
 			setFolders(storedFolders)
 		})
 	}
 
-	const findFolder = (
-		folderId: string,
-		folders: IFolder[]
-	): IFolder | null => {
-		for (let i = 0; i < folders.length; i++) {
-			const folder = folders[i]
+	// Find folders with the same name in the same parent folder
+	// This function will append a number to the name if a folder with the same name already exists
+	const findFoldersWithSameName = async (
+		folderName: string,
+		parentFolderId: string | null
+	) => {
+		let uniqueName = folderName
 
-			if (folder.id === folderId) {
-				return folder
-			}
+		const siblingFolders = parentFolderId
+			? await db.folders
+					.where('parentId')
+					.equals(parentFolderId)
+					.toArray()
+			: await db.folders
+					.filter((folder) => folder.parentId === null)
+					.toArray()
 
-			const found = findFolder(folderId, folder.subFolders!)
-
-			if (found) {
-				return found
-			}
+		let counter = 1
+		while (siblingFolders.some((folder) => folder.name === uniqueName)) {
+			uniqueName = `${folderName} (${counter})`
+			counter++
 		}
 
-		return null
+		return uniqueName
 	}
 
-	const findFoldersWithSameParent = (
+	// Create a new folder
+	const createFolder = async (name?: string, parentFolderId?: string) => {
+		// Check for same name in root
+		const uniqueName = await findFoldersWithSameName(
+			name || 'New Folder',
+			parentFolderId ?? null
+		)
+
+		const newFolder: IFolder = {
+			name: uniqueName,
+			id: generateUUID(),
+			conversations: [],
+			parentId: parentFolderId || null,
+			subFolders: [],
+			color: generateRandomColor(),
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
+			deletable: true,
+			isNew: false,
+		}
+
+		db.folders.add(newFolder)
+
+		// Add folder to db
+		updateFolderState()
+	}
+
+	// Update folder information
+	const updateFolder = async (
+		folderId: string,
 		parentFolderId: string | null,
-		folders: IFolder[]
-	): IFolder[] => {
-		const foldersList: IFolder[] = []
+		data: IFolderUpdateData
+	): Promise<IFolderUpdateData | null> => {
+		if (Object.keys(data).length <= 0) {
+			console.error('Nothing to change')
+			return null
+		}
 
-		for (let i = 0; i < folders.length; i++) {
-			const folder = folders[i]
+		const folderData = { ...data }
 
-			if (folder.parentId === parentFolderId) {
-				foldersList.push(folder)
-			}
-
-			const subMatches = findFoldersWithSameParent(
-				parentFolderId,
-				folder.subFolders!
+		if (folderData?.name) {
+			// Check for same name in root
+			const uniqueName = await findFoldersWithSameName(
+				folderData.name || 'New Folder',
+				parentFolderId ?? null
 			)
 
-			foldersList.push(...subMatches)
+			folderData.name = uniqueName
 		}
 
-		return foldersList
-	}
-
-	const removeConversationFromoConversationFolders = (
-		conversationId: string,
-		folderId: string
-	) => {
-		let folders: string[] = []
-
-		if (conversationFolders[conversationId]) {
-			folders = conversationFolders[conversationId]
-		}
-
-		console.log(folders)
-
-		folders = folders.filter((fId) => fId !== folderId)
-
-		const updatedConversationFolders = {
-			...conversationFolders,
-			[conversationId]: folders,
-		}
-
-		console.log(updatedConversationFolders)
-
-		setConversationFolders(updatedConversationFolders)
-		set('conversationFolders', updatedConversationFolders)
-	}
-
-	const updateFolderTree = (
-		folders: IFolder[],
-		folderId: string,
-		conversation: IFolderConversation
-	): IFolder[] => {
-		return folders.map((folder) => {
-			if (folder.id === folderId) {
-				const alreadyExists = folder.conversations.some(
-					(c) => c.id === conversation.id
-				)
-
-				if (alreadyExists) return folder
-
-				return {
-					...folder,
-					conversations: [...folder.conversations, conversation],
-					updatedAt: new Date().toISOString(),
-				}
-			}
-
-			if (folder.subFolders!.length > 0) {
-				return {
-					...folder,
-					subFolders: updateFolderTree(
-						folder.subFolders!,
-						folderId,
-						conversation
-					),
-				}
-			}
-
-			return folder
+		await db.folders.update(folderId, {
+			...folderData,
+			updatedAt: new Date().toISOString(),
 		})
+
+		updateFolderState()
+
+		return folderData
 	}
 
+	// Remove folder
+	const removeFolder = async (folderId: string) => {
+		// When a folder is deleted, all its subfolders and conversations are deleted
+		const collectDescendantFolderIds = (
+			folders: IFolder[],
+			targetId: string
+		): string[] => {
+			const idSet = new Set<string>()
+
+			function traverse(currentId: string) {
+				idSet.add(currentId)
+				for (const folder of folders) {
+					if (folder.parentId === currentId) {
+						traverse(folder.id)
+					}
+				}
+			}
+
+			traverse(targetId)
+			return Array.from(idSet)
+		}
+
+		const allFolders = await db.folders.toArray()
+		const idsToDelete = collectDescendantFolderIds(allFolders, folderId)
+		await db.folders.bulkDelete(idsToDelete)
+		updateFolderState()
+	}
+
+	// Add conversation to folder
 	const addConversationToFolder = async (
 		conversation: IFolderConversation,
 		folderId: string
@@ -190,144 +198,39 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 			}
 
 			await db.folders.update(folderId, updateData)
+			updateFolderState()
 		}
 	}
 
-	const collectDescendantFolderIds = (
-		folders: IFolder[],
-		targetId: string
-	): string[] => {
-		const idSet = new Set<string>()
-
-		function traverse(currentId: string) {
-			idSet.add(currentId)
-			for (const folder of folders) {
-				if (folder.parentId === currentId) {
-					traverse(folder.id)
-				}
-			}
-		}
-
-		traverse(targetId)
-		return Array.from(idSet)
-	}
-
-	const removeFolderFromTree = (
-		folders: IFolder[],
+	// Remove conversation from folder
+	const removeConversationFromFolder = async (
+		conversationId: string,
 		folderId: string
-	): IFolder[] => {
-		return folders
-			.map((folder) => ({
-				...folder,
-				subFolders: removeFolderFromTree(folder.subFolders!, folderId),
-			}))
-			.filter((folder) => folder.id !== folderId)
-	}
+	) => {
+		const folder = await db.folders.get(folderId)
 
-	const removeFolder = async (folderId: string) => {
-		const allFolders = await db.folders.toArray()
-		const idsToDelete = collectDescendantFolderIds(allFolders, folderId)
-		await db.folders.bulkDelete(idsToDelete)
-		updateFolderState()
-		// const updatedFolders = removeFolderFromTree(folders, folderId)
-
-		// setFolders(updatedFolders)
-		// set('folders', updatedFolders)
-	}
-
-	const removeConversationFromTree = (
-		folders: IFolder[],
-		conversationId: string
-	): IFolder[] => {
-		return folders.map((folder) => {
+		if (folder) {
 			const updatedConversations = folder.conversations.filter(
-				(c) => c.id !== conversationId
+				(conversation) => conversation.id !== conversationId
 			)
 
-			const updatedSubFolders = removeConversationFromTree(
-				folder.subFolders!,
-				conversationId
-			)
-
-			return {
-				...folder,
+			const updateData = {
 				conversations: updatedConversations,
-				subFolders: updatedSubFolders,
+				updatedAt: new Date().toISOString(),
 			}
-		})
+
+			await db.folders.update(folderId, updateData)
+			updateFolderState()
+		}
 	}
 
-	const removeConversationFromFolderTree = (
-		folders: IFolder[],
-		conversationId: string,
-		folderId: string
-	): IFolder[] => {
-		return folders.map((folder) => {
-			if (folder.id === folderId) {
-				return {
-					...folder,
-					conversations: folder.conversations.filter(
-						(c) => c.id !== conversationId
-					),
-				}
-			} else {
-				return {
-					...folder,
-					subFolders: removeConversationFromFolderTree(
-						folder.subFolders!,
-						conversationId,
-						folderId
-					),
-				}
-			}
-		})
-	}
-
-	const removeConversationFromFolder = (
-		conversationId: string,
-		folderId: string
-	) => {
-		const updatedFolders = removeConversationFromFolderTree(
-			folders,
-			conversationId,
-			folderId
-		)
-
-		removeConversationFromoConversationFolders(conversationId, folderId)
-
-		// console.log(folderId)
-		setFolders(updatedFolders)
-		set('folders', updatedFolders)
-
-		// API call in the future
-	}
-
+	// Move conversation to another folder
 	const moveConversationToFolder = (
-		conversation: IFolderConversation,
-		targetFolderId: string
-	) => {
-		const foldersWithoutConversation = removeConversationFromTree(
-			folders,
-			conversation.id
-		)
+		_conversation: IFolderConversation,
+		_targetFolderId: string
+	) => {}
 
-		const updatedFolders = updateFolderTree(
-			foldersWithoutConversation,
-			targetFolderId,
-			conversation
-		)
-
-		setFolders(updatedFolders)
-		set('folders', updatedFolders)
-
-		// toggleConversationInChatsInFolderStorage(
-		// 	conversation.id,
-		// 	targetFolderId
-		// )
-
-		// Future: Sync via API
-	}
-
+	// Check if conversation is in folder
 	const isConversationInFolder = (
 		folder: IFolder,
 		conversationId: string
@@ -339,149 +242,6 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		}
 
 		return false
-	}
-
-	const addSubFolder = (
-		folders: IFolder[],
-		parentId: string,
-		newSubFolder: IFolder
-	): IFolder[] => {
-		return folders.map((folder) => {
-			if (folder.id === parentId) {
-				return {
-					...folder,
-					subFolders: [...folder.subFolders!, newSubFolder],
-				}
-			} else if (folder.subFolders!.length > 0) {
-				return {
-					...folder,
-					subFolders: addSubFolder(
-						folder.subFolders!,
-						parentId,
-						newSubFolder
-					),
-				}
-			}
-			return folder
-		})
-	}
-
-	const createFolder = (name?: string, parentFolderId?: string) => {
-		const baseName = name || 'New Folder'
-
-		// Check in db
-		const siblingFolders = findFoldersWithSameParent(
-			parentFolderId ? parentFolderId : null,
-			folders
-		)
-
-		// Check for same name in db
-		let uniqueName = baseName
-		let counter = 1
-		while (siblingFolders.some((folder) => folder.name === uniqueName)) {
-			uniqueName = `${baseName} (${counter})`
-			counter++
-		}
-
-		const newFolder: IFolder = {
-			name: uniqueName,
-			id: generateUUID(),
-			conversations: [],
-			parentId: parentFolderId || null,
-			subFolders: [],
-			color: generateRandomColor(),
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString(),
-			deletable: true,
-			isNew: true,
-		}
-
-		let newFoldersList: IFolder[] = []
-
-		if (!parentFolderId) {
-			newFoldersList = [...folders, newFolder]
-		} else {
-			newFoldersList = addSubFolder(folders, parentFolderId, newFolder)
-		}
-
-		// Add folder to db
-		db.folders.add(newFolder)
-
-		setFolders(newFoldersList)
-		set('folders', newFoldersList)
-	}
-
-	const updateFolderTreeByEdit = (
-		folders: IFolder[],
-		folderId: string,
-		data: IFolderUpdateData
-	): IFolder[] => {
-		return folders.map((folder) => {
-			if (folder.id === folderId) {
-				return {
-					...folder,
-					...data,
-					updatedAt: new Date().toISOString(),
-				}
-			}
-
-			if (folder.subFolders!.length > 0) {
-				return {
-					...folder,
-					subFolders: updateFolderTreeByEdit(
-						folder.subFolders!,
-						folderId,
-						data
-					),
-				}
-			}
-
-			return folder
-		})
-	}
-
-	const updateFolder = (
-		folderId: string,
-		parentFolderId: string | null,
-		data: IFolderUpdateData
-	): IFolderUpdateData | null => {
-		if (Object.keys(data).length <= 0) {
-			console.error('Nothing to change')
-			return null
-		}
-
-		const folderData = { ...data }
-
-		if (folderData?.name) {
-			const baseName = folderData.name || 'New Folder'
-
-			const siblingFolders = findFoldersWithSameParent(
-				parentFolderId ? parentFolderId : null,
-				folders
-			)
-
-			let uniqueName = baseName
-			let counter = 1
-			while (
-				siblingFolders.some((folder) => folder.name === uniqueName)
-			) {
-				uniqueName = `${baseName} (${counter})`
-				counter++
-			}
-
-			folderData.name = uniqueName
-		}
-
-		const updatedFolders = updateFolderTreeByEdit(
-			folders,
-			folderId,
-			folderData
-		)
-
-		setFolders(updatedFolders)
-		set('folders', updatedFolders)
-
-		return folderData
 	}
 
 	return (

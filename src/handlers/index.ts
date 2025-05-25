@@ -18,7 +18,6 @@ export const fetchHandler = async (
 				conversationPostHandler(response, args)
 				break
 			case '/backend-api/conversations':
-				console.log({ response, args })
 				conversationsGetHandler(response, args)
 				break
 			default:

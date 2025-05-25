@@ -98,8 +98,8 @@ const FolderItems = ({
 		}
 	}, [isEditing])
 
-	const saveFolderName = (data: IFolderUpdateData) => {
-		const result = updateFolder(folder.id, folder.parentId, data)
+	const saveFolderName = async (data: IFolderUpdateData) => {
+		const result = await updateFolder(folder.id, folder.parentId, data)
 
 		if (result && result.name) {
 			setFolderName(result.name)

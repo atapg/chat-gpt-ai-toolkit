@@ -49,7 +49,7 @@ export interface IFoldersContextType {
 		folderId: string,
 		parentFolderId: string | null,
 		data: IFolderUpdateData
-	) => IFolderUpdateData | null
+	) => Promise<IFolderUpdateData | null>
 }
 
 export interface IConversationInFolders {
