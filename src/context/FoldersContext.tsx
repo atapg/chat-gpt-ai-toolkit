@@ -30,6 +30,8 @@ export const FoldersProvider = ({ children }: { children: ReactNode }) => {
 		// 	setFolders(storedFolders)
 		// })
 
+		// Fetch folders from the database and build the tree structure
+		// This will run once when the component mounts
 		updateFolderState()
 	}, [])
 
