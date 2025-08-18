@@ -43,7 +43,7 @@ const Sidebar = (_: ISidebar) => {
 
 	return (
 		<FoldersProvider>
-			<div id='sidebar-container'>
+			<div id='sidebar-container' style={{ padding: '9px' }}>
 				<FolderBar />
 				{/* Tabs */}
 				<div className='tabs'>
